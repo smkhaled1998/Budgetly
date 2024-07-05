@@ -1,6 +1,9 @@
+import 'package:budget_buddy/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'features/explore/presentation/widgets/bottom_navigation_bar_widget.dart';
+import 'features/explore/presentation/screens/bottom_navigation_bar_widget.dart';
+import 'features/explore/presentation/widgets/calculator_widget.dart';
 
 
 void main() {
@@ -13,14 +16,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
+    return BlocProvider<ExploreCubit>(
+      create: (context)=> ExploreCubit()..getCategoryData(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+          useMaterial3: true,
+        ),
+        home:  BottomNavigationBarWidget(),
       ),
-      home:  BottomNavigationBarWidget(),
     );
   }
 }

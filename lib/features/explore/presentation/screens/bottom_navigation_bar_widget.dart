@@ -1,5 +1,7 @@
 import 'package:budget_buddy/core/themes/app_color.dart';
 import 'package:budget_buddy/features/debt/debt_screen.dart';
+import 'package:budget_buddy/features/explore/presentation/screens/add_expense_screen.dart';
+import 'package:budget_buddy/features/explore/presentation/widgets/calculator_widget.dart';
 import 'package:budget_buddy/features/settings/settings_screen.dart';
 import 'package:budget_buddy/features/statistics/statistics_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
 import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
 
-import '../screens/explore_screen.dart';
+import 'explore_screen.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
   @override
@@ -27,7 +29,6 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SpinCircleBottomBarHolder(
         bottomNavigationBar: SCBottomBarDetails(
             circleColors: [
@@ -39,7 +40,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             activeIconTheme: const IconThemeData(color: AppColor.accentColor),
             backgroundColor: AppColor.backgroundColor,
             titleStyle:
-                const TextStyle(color: AppColor.textBoldColor, fontSize: 12),
+            const TextStyle(color: AppColor.textBoldColor, fontSize: 12),
             activeTitleStyle: const TextStyle(
                 color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
             actionButtonDetails: SCActionButtonDetails(
@@ -86,83 +87,87 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             ],
             circleItems: [
               SCItem(icon: const Icon(Icons.attach_money), onPressed: () {
-
+                Navigator.push(context,      MaterialPageRoute(builder: (context)=>AddExpenseScreen()));
               }),
               SCItem(icon: const Icon(Icons.money_off), onPressed: () {}),
-
             ],
             bnbHeight: 70 // Suggested Height 80
-            ),
-        child:Center(
+        ),
+        child: Center(
           child: screens[screenIndex],
         ),
       ),
     );
   }
 
-  List<PieChartSectionData> _generateSections() {
-    return List.generate(4, (i) {
-      final isTouched = i == touchedIndex;
-      final double fontSize = isTouched ? 20 : 16;
-      final double radius = isTouched ? 80 : 60;
+  // void _showModalBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         padding: EdgeInsets.zero,
+  //         height: MediaQuery.of(context).size.height*.85 ,
+  //         child: Column(
+  //           children: [
+  //
+  //
+  //             // Container(
+  //             //   height: MediaQuery.of(context).size.height * 0.3,
+  //             //   padding: EdgeInsets.all(16.0),
+  //             //   color: Colors.grey[200],
+  //             //   child: Column(
+  //             //     children: [
+  //             //       Row(
+  //             //         children: [
+  //             //           _buildCalculatorButton('1'),
+  //             //           _buildCalculatorButton('2'),
+  //             //           _buildCalculatorButton('3'),
+  //             //         ],
+  //             //       ),
+  //             //       Row(
+  //             //         children: [
+  //             //           _buildCalculatorButton('4'),
+  //             //           _buildCalculatorButton('5'),
+  //             //           _buildCalculatorButton('6'),
+  //             //         ],
+  //             //       ),
+  //             //       Row(
+  //             //         children: [
+  //             //           _buildCalculatorButton('7'),
+  //             //           _buildCalculatorButton('8'),
+  //             //           _buildCalculatorButton('9'),
+  //             //         ],
+  //             //       ),
+  //             //       Row(
+  //             //         children: [
+  //             //           _buildCalculatorButton('0'),
+  //             //           _buildCalculatorButton('.'),
+  //             //           _buildCalculatorButton('='),
+  //             //         ],
+  //             //       ),
+  //             //     ],
+  //             //   ),
+  //             // ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: AppColor.primaryColor,
-            value: 30,
-            title: 'Expenses',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: AppColor.backgroundColor,
-            ),
-          );
-        case 1:
-          return PieChartSectionData(
-            color: AppColor.secondaryColor,
-            value: 20,
-            title: 'Income',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: AppColor.backgroundColor,
-            ),
-          );
-        case 2:
-          return PieChartSectionData(
-            color: AppColor.accentColor,
-            value: 15,
-            title: 'Savings',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: AppColor.backgroundColor,
-            ),
-          );
-        case 3:
-          return PieChartSectionData(
-            color: AppColor.textColor,
-            value: 35,
-            title: 'Investments',
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: AppColor.backgroundColor,
-            ),
-          );
-        default:
-          return PieChartSectionData(
-            color: Colors.transparent,
-            value: 0,
-            title: '',
-            radius: 0,
-          );
-      }
-    });
-  }
+  // Widget _buildCalculatorButton(String text) {
+  //   return Expanded(
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: ElevatedButton(
+  //         onPressed: () {
+  //           // Handle calculator button press
+  //         },
+  //         child: Text(text),
+  //       ),
+  //     ),
+  //   );
+  // }
+
 }

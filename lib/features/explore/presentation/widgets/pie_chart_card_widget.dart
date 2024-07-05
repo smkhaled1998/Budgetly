@@ -158,7 +158,7 @@ class _PieChartCardWidgetState extends State<PieChartCardWidget> {
           strokeAlign: 0.5,
           color: AppColor.textLightColor,
         ),
-        color: [Colors.red, Colors.blue, Colors.teal, Colors.yellowAccent][i],
+        color: [AppColor.primaryColor, Color(0xFFAFC8AD),Color(0xFFEBE4D1), Color(0xFFE5D283)][i],
         value: [35, 15, 45, 5][i].toDouble(),
         title: "${[35, 15, 45, 5][i]}%",
         radius: radius,
@@ -195,7 +195,7 @@ class TransactionWidget extends StatelessWidget {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: isIncome ? color3 : color2,
+                color:color2 ,
                 shape: BoxShape.circle,
               ),
             ),

@@ -13,7 +13,7 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 340,
       child: Stack(
         children: [
           Container(
