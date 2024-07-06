@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/repositories/category_repository.dart';
-import '../datasources/budget_local_datasource.dart';
+import '../datasources/category_local_datasource.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryLocalDataSource localDataSource;
@@ -11,7 +11,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   CategoryRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, List<BudgetModel>>> getCategoryData() async {
+  Future<Either<Failure, List<CategoryModel>>> getCategoryData() async {
     try {
       final response = await localDataSource.getCategoryData('''
       SELECT * FROM `category`
@@ -19,7 +19,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
 
       final budget =
-          response.map((data) => BudgetModel.fromJson(data)).toList();
+          response.map((data) => CategoryModel.fromJson(data)).toList();
       return Right(budget);
     } catch (e) {
       return Left(DatabaseFailure());

@@ -12,43 +12,41 @@ class CalculatorWidget extends StatefulWidget {
 
 class _CalculatorWidgetState extends State<CalculatorWidget> {
   String _display = '';
+  bool _isResultDisplayed = false;
 
   static const List<String> operationButtons = [
-    '7', '8', '9', '+',
-    '4', '5', '6', '-',
-    '1', '2', '3', 'x',
-    '0', '.', '00', '/',
+    '7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', 'Del',
   ];
-  static const List<String> buttons = [
-    'C', 'Del', '='
-  ];
+  static const List<String> buttons = ['=', '+', '-', '*', '/'];
 
   void _onButtonPressed(String button) {
     setState(() {
-      if (button == 'C') {
-        _display = '';
-      } else if (button == 'Del') {
+      if (button == 'Del') {
         if (_display.isNotEmpty) {
           _display = _display.substring(0, _display.length - 1);
         }
       } else if (button == '=') {
         try {
-          _display = _evaluate(_display);
+          if (_display.isNotEmpty) {
+            final expression = Expression.parse(_display);
+            final evaluator = const ExpressionEvaluator();
+            final result = evaluator.eval(expression, {});
+            _display = result.toString();
+            _isResultDisplayed = true;
+          }
         } catch (e) {
           _display = 'Error';
+          _isResultDisplayed = true;
         }
       } else {
-        _display += button;
+        if (_isResultDisplayed) {
+          _display = button;
+          _isResultDisplayed = false;
+        } else {
+          _display += button;
+        }
       }
     });
-  }
-
-  String _evaluate(String expression) {
-    expression = expression.replaceAll('x', '*');
-    final parsedExpression = Expression.parse(expression);
-    const evaluator = ExpressionEvaluator();
-    final result = evaluator.eval(parsedExpression, {});
-    return result.toString();
   }
 
   @override
@@ -79,75 +77,72 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
             color: Colors.grey,
             height: 2,
           ),
-          Gap(5),
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1.5,
+          const Gap(5),
+          SingleChildScrollView(
+            child: Row(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.5,
+                    ),
+                    itemCount: operationButtons.length,
+                    itemBuilder: (context, index) {
+                      final button = operationButtons[index];
+                      return Container(
+                        color: Colors.grey[200],
+                        child: TextButton(
+                          onPressed: () => _onButtonPressed(button),
+                          child: Text(
+                            button,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.primaryColor,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  width: 2,
+                  color: Colors.grey,
+                ),
+                Column(
+                  children: [
+                    _operationButton(0),
+                    _operationButton(1),
+                    _operationButton(2),
+                    _operationButton(3),
+                    _operationButton(4),
+                  ],
+                )
+              ],
             ),
-            itemCount: buttons.length,
-            itemBuilder: (context, index) {
-              final button = buttons[index];
-              return ElevatedButton(
-                onPressed: () => _onButtonPressed(button),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _getButtonColor(button),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: Text(
-                  button,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.backgroundColor,
-                  ),
-                ),
-              );
-            },
-          ),
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              childAspectRatio: 1.5,
-            ),
-            itemCount: operationButtons.length,
-            itemBuilder: (context, index) {
-              final button = operationButtons[index];
-              return ElevatedButton(
-                onPressed: () => _onButtonPressed(button),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _getButtonColor(button),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: Text(
-                  button,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.backgroundColor,
-                  ),
-                ),
-              );
-            },
           ),
         ],
       ),
     );
   }
 
-  Color _getButtonColor(String button) {
-    if (button == 'C' || button == 'Del') {
-      return AppColor.lightGray;
-    } else if (button == '=' || button == '/' || button == 'x' || button == '-' || button == '+') {
-      return AppColor.secondaryColor;
-    } else {
-      return AppColor.primaryColor;
-    }
+  Widget _operationButton(int num) {
+    return Container(
+      color: Colors.grey,
+      child: TextButton(
+        onPressed: () => _onButtonPressed(buttons[num]),
+        child: Text(
+          buttons[num],
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColor.accentColor,
+          ),
+        ),
+      ),
+    );
   }
 }

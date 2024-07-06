@@ -1,6 +1,6 @@
 import 'package:budget_buddy/core/themes/app_color.dart';
 import 'package:budget_buddy/features/debt/debt_screen.dart';
-import 'package:budget_buddy/features/explore/presentation/screens/add_expense_screen.dart';
+import 'package:budget_buddy/features/explore/presentation/screens/expense_entry_screen.dart';
 import 'package:budget_buddy/features/explore/presentation/widgets/calculator_widget.dart';
 import 'package:budget_buddy/features/settings/settings_screen.dart';
 import 'package:budget_buddy/features/statistics/statistics_screen.dart';
@@ -23,7 +23,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
     ExploreScreen(),
     const StatisticsScreen(),
     const DebtScreen(),
-    const SettingsScreen()
+     SettingsScreen()
   ];
 
   @override
@@ -87,7 +87,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             ],
             circleItems: [
               SCItem(icon: const Icon(Icons.attach_money), onPressed: () {
-                Navigator.push(context,      MaterialPageRoute(builder: (context)=>AddExpenseScreen()));
+                Navigator.push(context,      MaterialPageRoute(builder: (context)=>ExpenseEntryScreen()));
               }),
               SCItem(icon: const Icon(Icons.money_off), onPressed: () {}),
             ],

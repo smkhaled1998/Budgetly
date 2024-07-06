@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/themes/app_color.dart';
+import '../screens/categories_manager_screen.dart';
 
 class CategoryEditActionRow extends StatelessWidget {
   const CategoryEditActionRow({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class CategoryEditActionRow extends StatelessWidget {
         ),
         MaterialButton(
           onPressed: () {
+            Navigator.push(context,  MaterialPageRoute(builder: (context)=>CategoriesManager()));
             print("BudgetCategoryManager is pressed");
 
           },

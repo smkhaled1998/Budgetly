@@ -7,8 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/themes/app_color.dart';
 import '../widgets/calculator_widget.dart';
 
-class AddExpenseScreen extends StatelessWidget {
-  const AddExpenseScreen({super.key});
+class ExpenseEntryScreen extends StatelessWidget {
+  const ExpenseEntryScreen({super.key});
 
 
   @override

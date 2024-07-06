@@ -6,11 +6,11 @@ import '../entities/category_entity.dart';
 import '../repositories/category_repository.dart';
 
 class InsertCategoryDataUseCase {
-  final CategoryRepository budgetRepository;
+  final CategoryRepository categoryRepository;
 
-  InsertCategoryDataUseCase({required this.budgetRepository});
+  InsertCategoryDataUseCase({required this.categoryRepository});
 
   Future<Either<Failure, Unit>> call(item) async {
-    return await budgetRepository.insertCategoryData( item);
+    return await categoryRepository.insertCategoryData( item);
   }
 }

@@ -57,7 +57,9 @@ class CategoryCardWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "\$${state.items[index].leftToSpend} left to spend",
+                              "\$${double.parse(state.items[index].total) -
+                                  double.parse(state
+                                      .items[index].spent)} left to spend",
                               style: const TextStyle(
                                 color: AppColor.textLightColor,
                                 fontSize: 12,
@@ -98,7 +100,7 @@ class CategoryCardWidget extends StatelessWidget {
                       valueColor:
                           const AlwaysStoppedAnimation(AppColor.accentColor),
                       minHeight: 10,
-                      value: double.parse(state.items[index].spent) /
+                      value: double.parse(state.items[index].spent!) /
                           double.parse(state
                               .items[index].total), // Dynamically calculated
                     ),

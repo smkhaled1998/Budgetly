@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/explore/data/datasources/budget_local_datasource.dart';
+import 'package:budget_buddy/features/explore/data/datasources/category_local_datasource.dart';
 import 'package:budget_buddy/features/explore/data/repositories/category_repository_imp.dart';
 import 'package:budget_buddy/features/explore/domain/entities/category_entity.dart';
 import 'package:budget_buddy/features/explore/domain/usecases/get_category_data_usecase.dart';
@@ -12,7 +12,7 @@ class ExploreCubit extends Cubit<ExploreStates> {
   static ExploreCubit get(context) => BlocProvider.of(context);
   Future<void> insertCategoryData(CategoryEntity item) async {
     InsertCategoryDataUseCase(
-            budgetRepository: CategoryRepositoryImpl(
+            categoryRepository: CategoryRepositoryImpl(
                 localDataSource: CategoryLocalDataSource()))
         .call(item);
   }

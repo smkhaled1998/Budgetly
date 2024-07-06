@@ -1,12 +1,18 @@
+import 'package:budget_buddy/features/explore/data/datasources/category_local_datasource.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+   SettingsScreen({Key? key}) : super(key: key);
+
+  CategoryLocalDataSource localDataSource=CategoryLocalDataSource();
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("Keep going (Settings Screen) "),
+      child: IconButton(icon:const Icon(Icons.delete),onPressed: (){
+        localDataSource.removeDataBase();
+
+      },),
     );
   }
 }

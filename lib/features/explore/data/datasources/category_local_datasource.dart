@@ -31,10 +31,10 @@ class CategoryLocalDataSource {
         CREATE TABLE category (
           categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
-          color TEXT NOT NULL,
-          icon TEXT NOT NULL,
-          spent TEXT NOT NULL,
-          leftToSpend TEXT NOT NULL,
+          color TEXT ,
+          icon TEXT ,
+          spent TEXT ,
+          leftToSpend TEXT ,
           total TEXT NOT NULL
         )
       ''');
@@ -43,6 +43,13 @@ class CategoryLocalDataSource {
       print("Error creating category table: $e");
       throw Exception("Error creating category table");
     }
+  }
+  removeDataBase()async{
+    String databasePath= await getDatabasesPath();
+    String path =join(databasePath,"category.db");
+    await deleteDatabase(path);
+
+    print("=========== OnDelete ========");
   }
 
   Future<List<Map<String, dynamic>>> getCategoryData(String sql) async {
