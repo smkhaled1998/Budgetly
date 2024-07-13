@@ -1,13 +1,15 @@
-// lib/features/categories/data/datasources/category_local_data_source.dart
 import 'package:sqflite/sqflite.dart';
 import '../../../../core/database_helper.dart';
 import '../../../../core/error/exceptions.dart';
 
-class CategoryLocalDataSource {
-  Future<List<Map<String, dynamic>>> getCategoryData(String query) async {
+class UserInfoLocalDataSource {
+
+  Future<List<Map<String, dynamic>>> getUserData(String query) async {
     try {
+
       Database? myDb = await DatabaseHelper.db;
       return await myDb!.rawQuery(query);
+
     } on DatabaseException catch (e) {
       if (e.isSyntaxError()) {
         throw SQLSyntaxException();
@@ -21,11 +23,11 @@ class CategoryLocalDataSource {
     }
   }
 
-  Future<int> insertCategoryData(String query) async {
+  Future<int> insertUserData(String query) async {
     try {
       Database? myDb = await DatabaseHelper.db;
       int response = await myDb!.rawInsert(query);
-      print("***************************Category Data inserted*************************");
+      print("***************************User Data inserted*************************");
       return response;
     } on DatabaseException catch (e) {
       if (e.isSyntaxError()) {
@@ -38,11 +40,11 @@ class CategoryLocalDataSource {
     }
   }
 
-  Future<int> deleteCategoryData(String query) async {
+  Future<int> deleteUserData(String query) async {
     try {
       Database? myDb = await DatabaseHelper.db;
       int response = await myDb!.rawDelete(query);
-      print("Category Data deleted");
+      print("User Data deleted");
       return response;
     } on DatabaseException catch (e) {
       if (e.isSyntaxError()) {
@@ -55,11 +57,11 @@ class CategoryLocalDataSource {
     }
   }
 
-  Future<int> updateCategoryData(String sql) async {
+  Future<int> updateUserData(String sql) async {
     try {
       Database? myDb = await DatabaseHelper.db;
       int response = await myDb!.rawUpdate(sql);
-      print("Category Data updated");
+      print("User Data updated");
       return response;
     } on DatabaseException catch (e) {
       if (e.isSyntaxError()) {
