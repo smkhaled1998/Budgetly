@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:budget_buddy/core/themes/app_color.dart';
-import 'package:budget_buddy/features/explore/presentation/widgets/pie_chart_card_widget.dart';
+import 'package:budget_buddy/features/explore/presentation/explore/widgets/pie_chart_card_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

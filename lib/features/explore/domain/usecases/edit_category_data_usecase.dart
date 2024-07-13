@@ -5,15 +5,14 @@ import 'package:dartz/dartz.dart';
 import '../entities/category_entity.dart';
 import '../repositories/category_repository.dart';
 
-class EditCategoryDataUseCase{
+class UpdateCategoryDataUseCase{
 
-  final CategoryRepository budgetRepository;
-  final CategoryEntity item;
+  final CategoryRepository categoryRepository;
 
-  EditCategoryDataUseCase({required this.budgetRepository,required this.item});
+  UpdateCategoryDataUseCase({required this.categoryRepository});
 
-  Future <Either<Failure,Unit>> call()async{
+  Future <Either<Failure,Unit>> call(CategoryEntity item)async{
 
-    return await budgetRepository.updateCategoryData( item);
+    return await categoryRepository.updateCategoryData( item);
   }
 }

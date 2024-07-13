@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../../../../core/error/exceptions.dart';
 
 class CategoryLocalDataSource {
   static Database? _db;
@@ -17,11 +18,16 @@ class CategoryLocalDataSource {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'category.db');
     try {
-      Database myDb = await openDatabase(path, onCreate: _onCreate,version: 1);
+      Database myDb = await openDatabase(path, onCreate: _onCreate, version: 1);
       return myDb;
+    } on DatabaseException catch (e) {
+      if (e.isOpenFailedError()) {
+        throw DatabaseInitializationException();
+      } else {
+        throw QueryExecutionException();
+      }
     } catch (e) {
-      print("Error opening category database: $e");
-      throw Exception("Error opening category database");
+      throw Exception("Unknown error opening category database");
     }
   }
 
@@ -31,58 +37,75 @@ class CategoryLocalDataSource {
         CREATE TABLE category (
           categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
-          color TEXT ,
-          icon TEXT ,
-          spent TEXT ,
-          leftToSpend TEXT ,
-          total TEXT NOT NULL
+          color TEXT,
+          icon TEXT,
+          spent TEXT,
+          leftToSpend TEXT,
+          categorySlice TEXT 
         )
       ''');
       print("Category Table successfully created");
-    } catch (e) {
-      print("Error creating category table: $e");
-      throw Exception("Error creating category table");
+    } on DatabaseException catch (e) {
+      print("SQLSyntaxException + $e");
+      throw SQLSyntaxException();
     }
   }
-  removeDataBase()async{
-    String databasePath= await getDatabasesPath();
-    String path =join(databasePath,"category.db");
-    await deleteDatabase(path);
 
+  Future<void> removeDatabase() async {
+    String databasePath = await getDatabasesPath();
+    String path = join(databasePath, "category.db");
+    await deleteDatabase(path);
     print("=========== OnDelete ========");
   }
 
-  Future<List<Map<String, dynamic>>> getCategoryData(String sql) async {
+  Future<List<Map<String, dynamic>>> getCategoryData(String query) async {
     try {
       Database? myDb = await db;
-      return await myDb!.rawQuery(sql);
+      return await myDb!.rawQuery(query);
+    } on DatabaseException catch (e) {
+      if (e.isSyntaxError()) {
+        throw SQLSyntaxException();
+      } else if (e.isOpenFailedError()) {
+        throw DatabaseInitializationException();
+      } else {
+        throw QueryExecutionException();
+      }
     } catch (e) {
-      print("Error fetching category data: $e");
-      throw Exception("Error fetching category data");
+      throw DataRetrievalException();
     }
   }
 
-  Future<int> insertCategoryData(String sql) async {
+  Future<int> insertCategoryData(String query) async {
     try {
       Database? myDb = await db;
-      int response = await myDb!.rawInsert(sql);
+      int response = await myDb!.rawInsert(query);
       print("***************************Category Data inserted*************************");
       return response;
+    } on DatabaseException catch (e) {
+      if (e.isSyntaxError()) {
+        throw SQLSyntaxException();
+      } else {
+        throw DataInsertionException();
+      }
     } catch (e) {
-      print("Error inserting category data: $e");
-      throw Exception("Error inserting category data");
+      throw DataRetrievalException();
     }
   }
 
-  Future<int> deleteCategoryData(String sql) async {
+  Future<int> deleteCategoryData(String query) async {
     try {
       Database? myDb = await db;
-      int response = await myDb!.rawDelete(sql);
+      int response = await myDb!.rawDelete(query);
       print("Category Data deleted");
       return response;
+    } on DatabaseException catch (e) {
+      if (e.isSyntaxError()) {
+        throw SQLSyntaxException();
+      } else {
+        throw DataDeletionException();
+      }
     } catch (e) {
-      print("Error deleting category data: $e");
-      throw Exception("Error deleting category data");
+      throw DataRetrievalException();
     }
   }
 
@@ -92,9 +115,14 @@ class CategoryLocalDataSource {
       int response = await myDb!.rawUpdate(sql);
       print("Category Data updated");
       return response;
+    } on DatabaseException catch (e) {
+      if (e.isSyntaxError()) {
+        throw SQLSyntaxException();
+      } else {
+        throw DataUpdateException();
+      }
     } catch (e) {
-      print("Error updating category data: $e");
-      throw Exception("Error updating category data");
+      throw DataRetrievalException();
     }
   }
 }

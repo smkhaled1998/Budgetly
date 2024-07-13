@@ -10,7 +10,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: IconButton(icon:const Icon(Icons.delete),onPressed: (){
-        localDataSource.removeDataBase();
+        localDataSource.removeDatabase();
 
       },),
     );

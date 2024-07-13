@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:expressions/expressions.dart';
-import '../../../../core/themes/app_color.dart';
+
+import '../../../../../core/themes/app_color.dart';
 
 class CalculatorWidget extends StatefulWidget {
-  const CalculatorWidget({super.key});
+  final Function(String) onValueSelected;
+
+  const CalculatorWidget({super.key, required this.onValueSelected});
 
   @override
   _CalculatorWidgetState createState() => _CalculatorWidgetState();
@@ -14,12 +17,12 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   String _display = '';
   bool _isResultDisplayed = false;
 
-  static const List<String> operationButtons = [
+  static const List<String> numbers = [
     '7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', 'Del',
   ];
-  static const List<String> buttons = ['=', '+', '-', '*', '/'];
+  static const List<String> operationButtons = ['=', '+', '-', '*', '/'];
 
-  void _onButtonPressed(String button) {
+  void _onOperationButtonPressed(String button) {
     setState(() {
       if (button == 'Del') {
         if (_display.isNotEmpty) {
@@ -29,13 +32,15 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
         try {
           if (_display.isNotEmpty) {
             final expression = Expression.parse(_display);
-            final evaluator = const ExpressionEvaluator();
+            const evaluator = ExpressionEvaluator();
             final result = evaluator.eval(expression, {});
             _display = result.toString();
             _isResultDisplayed = true;
+            widget.onValueSelected(_display); // Pass the value back
           }
         } catch (e) {
-          _display = 'Error';
+          _display = "Error";
+          print(e.toString());
           _isResultDisplayed = true;
         }
       } else {
@@ -88,13 +93,13 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                       crossAxisCount: 3,
                       childAspectRatio: 1.5,
                     ),
-                    itemCount: operationButtons.length,
+                    itemCount: numbers.length,
                     itemBuilder: (context, index) {
-                      final button = operationButtons[index];
+                      final button = numbers[index];
                       return Container(
                         color: Colors.grey[200],
                         child: TextButton(
-                          onPressed: () => _onButtonPressed(button),
+                          onPressed: () => _onOperationButtonPressed(button),
                           child: Text(
                             button,
                             style: const TextStyle(
@@ -114,11 +119,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                 ),
                 Column(
                   children: [
-                    _operationButton(0),
-                    _operationButton(1),
-                    _operationButton(2),
-                    _operationButton(3),
-                    _operationButton(4),
+                    _operationButtonUI(0),
+                    _operationButtonUI(1),
+                    _operationButtonUI(2),
+                    _operationButtonUI(3),
+                    _operationButtonUI(4),
                   ],
                 )
               ],
@@ -129,13 +134,13 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     );
   }
 
-  Widget _operationButton(int num) {
+  Widget _operationButtonUI(int num) {
     return Container(
       color: Colors.grey,
       child: TextButton(
-        onPressed: () => _onButtonPressed(buttons[num]),
+        onPressed: () => _onOperationButtonPressed(operationButtons[num]),
         child: Text(
-          buttons[num],
+          operationButtons[num],
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

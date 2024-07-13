@@ -1,7 +1,5 @@
 import 'package:budget_buddy/core/themes/app_color.dart';
 import 'package:budget_buddy/features/debt/debt_screen.dart';
-import 'package:budget_buddy/features/explore/presentation/screens/expense_entry_screen.dart';
-import 'package:budget_buddy/features/explore/presentation/widgets/calculator_widget.dart';
 import 'package:budget_buddy/features/settings/settings_screen.dart';
 import 'package:budget_buddy/features/statistics/statistics_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -9,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:spincircle_bottom_bar/modals.dart';
 import 'package:spincircle_bottom_bar/spincircle_bottom_bar.dart';
 
+import 'expense_entry_screen.dart';
 import 'explore_screen.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
@@ -87,7 +86,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             ],
             circleItems: [
               SCItem(icon: const Icon(Icons.attach_money), onPressed: () {
-                Navigator.push(context,      MaterialPageRoute(builder: (context)=>ExpenseEntryScreen()));
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>ExpenseEntryScreen()));
               }),
               SCItem(icon: const Icon(Icons.money_off), onPressed: () {}),
             ],

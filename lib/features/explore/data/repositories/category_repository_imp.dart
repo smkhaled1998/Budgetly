@@ -1,5 +1,6 @@
 import 'package:budget_buddy/features/explore/data/models/budget_model.dart';
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/repositories/category_repository.dart';
@@ -17,49 +18,78 @@ class CategoryRepositoryImpl implements CategoryRepository {
       SELECT * FROM `category`
       ''');
 
-
-      final budget =
-          response.map((data) => CategoryModel.fromJson(data)).toList();
+      final budget = response.map((data) => CategoryModel.fromJson(data)).toList();
       return Right(budget);
-    } catch (e) {
-      return Left(DatabaseFailure());
+
+    } on DataRetrievalException catch (e) {
+      return Left(DataRetrievalFailure(errorMessage: e.toString()));
+    } on DatabaseInitializationException catch (e) {
+      return Left(DatabaseInitializationFailure(errorMessage: e.toString()));
+    } on SQLSyntaxException catch (e) {
+      return Left(SQLSyntaxFailure(errorMessage: e.toString()));
+    } on QueryExecutionException catch (e) {
+      return Left(QueryExecutionFailure(errorMessage: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, Unit>> insertCategoryData(CategoryEntity item) async {
-    await localDataSource.insertCategoryData('''
-   INSERT INTO `category` (
-   `name`,`color`,`icon`,`total`,`spent`,`leftToSpend`
-   ) VALUES(
-   "${item.name}","${item.color}","${item.icon}","${item.total}","${item.spent}","${item.leftToSpend}"
-   )
-    
-    ''');
     try {
+      await localDataSource.insertCategoryData('''
+      INSERT INTO `category` (
+      `name`,`color`,`icon`,`categorySlice`,`spent`,`leftToSpend`
+      ) VALUES(
+      "${item.name}","${item.color}","${item.icon}","${item.categorySlice}","${item.spent}","${item.leftToSpend}"
+      )
+      ''');
       return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure());
+    } on DataInsertionException catch (e) {
+      return Left(DataInsertionFailure(errorMessage: e.toString()));
+    } on DatabaseInitializationException catch (e) {
+      return Left(DatabaseInitializationFailure(errorMessage: e.toString()));
+    } on SQLSyntaxException catch (e) {
+      return Left(SQLSyntaxFailure(errorMessage: e.toString()));
+    } on QueryExecutionException catch (e) {
+      return Left(QueryExecutionFailure(errorMessage: e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, Unit>> updateCategoryData(CategoryEntity budget) async {
+  Future<Either<Failure, Unit>> updateCategoryData(CategoryEntity category) async {
     try {
-      await localDataSource.updateCategoryData("");
+      await localDataSource.updateCategoryData('''
+      UPDATE `category`
+      SET `name` = "${category.name}", `color` = "${category.color}", `icon` = "${category.icon}", `categorySlice` = "${category.categorySlice}", `spent` = "${category.spent}", `leftToSpend` = "${category.leftToSpend}"
+      WHERE `name` = "${category.name}"
+      ''');
       return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure());
+    } on DataUpdateException catch (e) {
+      return Left(DataUpdateFailure(errorMessage: e.toString()));
+    } on DatabaseInitializationException catch (e) {
+      return Left(DatabaseInitializationFailure(errorMessage: e.toString()));
+    } on SQLSyntaxException catch (e) {
+      return Left(SQLSyntaxFailure(errorMessage: e.toString()));
+    } on QueryExecutionException catch (e) {
+      return Left(QueryExecutionFailure(errorMessage: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, Unit>> deleteCategoryData(int categoryId) async {
     try {
-      await localDataSource.deleteCategoryData("");
+      await localDataSource.deleteCategoryData('''
+      DELETE FROM `category`
+      WHERE `id` = $categoryId
+      ''');
       return const Right(unit);
-    } catch (e) {
-      return Left(DatabaseFailure());
+    } on DataDeletionException catch (e) {
+      return Left(DataDeletionFailure(errorMessage: e.toString()));
+    } on DatabaseInitializationException catch (e) {
+      return Left(DatabaseInitializationFailure(errorMessage: e.toString()));
+    } on SQLSyntaxException catch (e) {
+      return Left(SQLSyntaxFailure(errorMessage: e.toString()));
+    } on QueryExecutionException catch (e) {
+      return Left(QueryExecutionFailure(errorMessage: e.toString()));
     }
   }
 }

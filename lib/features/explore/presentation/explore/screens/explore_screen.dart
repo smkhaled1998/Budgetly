@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/themes/app_color.dart';
 import '../widgets/category_card_widget.dart';
 import '../widgets/category_edit_action_row.dart';
 import '../widgets/header_widget.dart';

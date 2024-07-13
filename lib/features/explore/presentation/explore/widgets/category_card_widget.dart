@@ -1,14 +1,15 @@
-import 'package:budget_buddy/features/explore/presentation/cubit/explore_cubit.dart';
-import 'package:budget_buddy/features/explore/presentation/cubit/explore_states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/themes/app_color.dart';
+import '../../../../../core/themes/app_color.dart';
+import '../cubit/explore_cubit.dart';
+import '../cubit/explore_states.dart';
 
 class CategoryCardWidget extends StatelessWidget {
   const CategoryCardWidget({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class CategoryCardWidget extends StatelessWidget {
                     Row(
                       children: [
                         Image.asset(
-                          "assets/housing.png",
+                          state.items[index].icon!,
                           width: 30,
                           height: 30,
                         ),
@@ -57,7 +58,7 @@ class CategoryCardWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "\$${double.parse(state.items[index].total) -
+                              "\$${double.parse(state.items[index].categorySlice) -
                                   double.parse(state
                                       .items[index].spent)} left to spend",
                               style: const TextStyle(
@@ -82,7 +83,7 @@ class CategoryCardWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "of \$${state.items[index].total} total",
+                              "of \$${state.items[index].categorySlice} total",
                               style: const TextStyle(
                                 color: AppColor.textLightColor,
                                 fontSize: 12,
@@ -96,19 +97,22 @@ class CategoryCardWidget extends StatelessWidget {
                     const Gap(5),
                     LinearProgressIndicator(
                       borderRadius: BorderRadius.circular(15),
-                      backgroundColor: AppColor.lightGray,
+                      backgroundColor: Colors.grey,
                       valueColor:
-                          const AlwaysStoppedAnimation(AppColor.accentColor),
+                  //state.items[index].color!
+                       AlwaysStoppedAnimation(AppColor.accentColor),
                       minHeight: 10,
-                      value: double.parse(state.items[index].spent!) /
+                      value: double.parse(state.items[index].spent) /
                           double.parse(state
-                              .items[index].total), // Dynamically calculated
+                              .items[index].categorySlice), // Dynamically calculated
                     ),
                   ],
                 ),
               );
             },
           );
+        } else if (state is GetCategoryDataErrorState){
+          return Center(child: Text(state.errorMessage),);
         } else {
           return const CircularProgressIndicator();
         }

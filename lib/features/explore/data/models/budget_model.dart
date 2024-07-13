@@ -4,7 +4,7 @@ import '../../domain/entities/category_entity.dart';
 class CategoryModel extends CategoryEntity {
   CategoryModel(
       { super.categoryId,
-      required super.total,
+      required super.categorySlice,
        super.leftToSpend,
        super.spent,
        super.icon,
@@ -14,7 +14,7 @@ class CategoryModel extends CategoryEntity {
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
         categoryId: json["categoryId"],
-        total: json["total"],
+        categorySlice: json["categorySlice"],
         leftToSpend: json["leftToSpend"],
         spent: json["spent"],
         icon: json["icon"],
@@ -27,7 +27,7 @@ class CategoryModel extends CategoryEntity {
       "name":name,
       "icon":icon,
       "color":color,
-      "total":total,
+      "budgetSlice":categorySlice,
       "spent":spent,
       "leftToSpend":leftToSpend,
       "categoryId":categoryId,

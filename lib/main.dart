@@ -1,13 +1,16 @@
-import 'package:budget_buddy/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'features/explore/presentation/screens/bottom_navigation_bar_widget.dart';
-import 'features/explore/presentation/widgets/calculator_widget.dart';
+import 'core/util/bloc_obserever.dart';
+import 'features/explore/presentation/explore/cubit/explore_cubit.dart';
+import 'features/explore/presentation/explore/screens/bottom_navigation_bar_widget.dart';
+
 
 
 void main() {
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer=MyBlocObserver();
 }
 
 class MyApp extends StatelessWidget {

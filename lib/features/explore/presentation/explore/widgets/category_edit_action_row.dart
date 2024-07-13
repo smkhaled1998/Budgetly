@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/themes/app_color.dart';
+import '../../../../../core/themes/app_color.dart';
 import '../screens/categories_manager_screen.dart';
 
 class CategoryEditActionRow extends StatelessWidget {
