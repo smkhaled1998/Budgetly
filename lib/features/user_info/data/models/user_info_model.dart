@@ -3,7 +3,7 @@ import '../../domain/entities/user_info_entity.dart';
 class UserInfoModel extends UserInfoEntity {
   UserInfoModel({
     super.userId,
-    required super.userName,
+     super.userName,
     super.userImg,
     required super.monthlyBudget,
     super.currency,

@@ -11,8 +11,8 @@ class UpdateUserInfoUseCase{
 
   UpdateUserInfoUseCase({required this.userInfoRepository});
 
-  Future <Either<Failure,Unit>> call(UserInfoEntity item)async{
+  Future <Either<Failure,Unit>> call(UserInfoEntity user)async{
 
-    return await userInfoRepository.updateUserInfo( item);
+    return await userInfoRepository.updateUserInfo( user);
   }
 }

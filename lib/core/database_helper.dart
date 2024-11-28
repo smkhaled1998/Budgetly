@@ -26,41 +26,58 @@ class DatabaseHelper {
       return myDb;
     } on DatabaseException catch (e) {
       if (e.isOpenFailedError()) {
-        throw DatabaseInitializationException();
+        throw DatabaseInitializationException("Failed to initialize or open database.");
       } else {
-        throw QueryExecutionException();
+        throw QueryExecutionException("Query execution failed: ${e.toString()}");
       }
     } catch (e) {
-      throw Exception("Unknown error opening database");
+      throw Exception("Unknown error opening database: ${e.toString()}");
     }
   }
 
   static Future<void> _onCreate(Database db, int version) async {
     try {
-      await db.execute('''
-        CREATE TABLE category (
-          categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          color TEXT,
-          icon TEXT,
-          spent TEXT,
-          leftToSpend TEXT,
-          categorySlice TEXT
-        )
-      ''');
-      await db.execute('''
-        CREATE TABLE userInfo (
-          userId INTEGER PRIMARY KEY AUTOINCREMENT,
-          userName TEXT NOT NULL,
-          monthlyBudget TEXT NOT NULL,
-          currency TEXT NOT NULL,
-          spentAmount TEXT NOT NULL
-        )
-      ''');
+      // إنشاء جدول الفئات
+      await db.execute('''CREATE TABLE category (
+        categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        color TEXT,
+        icon TEXT,
+        allocatedAmount REAL NOT NULL,
+        spentAmount REAL NOT NULL DEFAULT 0
+      )''');
+
+      // إنشاء جدول معلومات المستخدم
+      await db.execute('''CREATE TABLE userInfo (
+        userId INTEGER PRIMARY KEY AUTOINCREMENT,
+        userName TEXT NOT NULL,
+        monthlyBudget REAL NOT NULL,
+        currency TEXT NOT NULL,
+        spentAmount REAL NOT NULL DEFAULT 0
+      )''');
+
+      // إنشاء جدول المعاملات
+      await db.execute('''CREATE TABLE transactions (
+        transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
+        categoryId INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        date TEXT NOT NULL,
+        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE
+      )''');
+
+      // إنشاء جدول مصروفات المدخلات
+      await db.execute('''CREATE TABLE expense_entry (
+        expenseEntryId INTEGER PRIMARY KEY AUTOINCREMENT,
+        categoryId INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        date TEXT NOT NULL,
+        note TEXT,
+        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE
+      )''');
+
       print("Tables successfully created");
     } on DatabaseException catch (e) {
-      print("SQLSyntaxException + $e");
-      throw SQLSyntaxException();
+      throw SQLSyntaxException("SQL syntax error: ${e.toString()}");
     }
   }
 
@@ -68,6 +85,6 @@ class DatabaseHelper {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, "budgettly.db");
     await deleteDatabase(path);
-    print("=========== OnDelete ========");
+    print("Database deleted");
   }
 }
