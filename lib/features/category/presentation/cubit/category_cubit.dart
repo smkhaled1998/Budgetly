@@ -6,6 +6,7 @@ import '../../data/datasources/category_datasource.dart';
 import '../../data/models/category_model.dart';
 import '../../data/repositories/category_repository_imp.dart';
 import '../../domain/entities/category_entity.dart';
+import '../../domain/usecases/delete_category_data_usecase.dart';
 import '../../domain/usecases/edit_category_data_usecase.dart';
 import '../../domain/usecases/get_category_data_usecase.dart';
 import '../../domain/usecases/insert_category_data_usecase.dart';
@@ -81,6 +82,27 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Category updated successfully');
         emit(CategoryUpdatedState());
+        getBudgetCategories(); // تحديث الفئات بعد التحديث
+      },
+    );
+  }
+  Future<void> deleteCategoryData(int categoryId) async {
+    emit(CategoryDeleteLoadingState()); // حالة التحميل
+    final useCase = DeleteCategoryDataUseCase(
+      categoryRepository: CategoryRepositoryImpl(
+        localDataSource: CategoryDataSource(),
+      ), categoryId: categoryId,
+    );
+
+    final result = await useCase.call(categoryId);
+    result.fold(
+          (failure) {
+        print('Error occurred: \${failure.message}');
+        emit(CategoryDeleteErrorState(failure.message));
+      },
+          (_) {
+        print('Category updated successfully');
+        emit(CategoryDeletedState());
         getBudgetCategories(); // تحديث الفئات بعد التحديث
       },
     );

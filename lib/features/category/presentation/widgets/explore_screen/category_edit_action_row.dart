@@ -35,7 +35,6 @@ class CategoryEditActionRow extends StatelessWidget {
                 ),
               ),
             );
-            print("BudgetCategoryManager is pressed");
           },
           color: AppColor.accentColor,
           child: Text(

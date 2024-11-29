@@ -22,6 +22,13 @@ class CategoryUpdateErrorState extends CategoryStates {
   CategoryUpdateErrorState(this.message);
 }
 
+/// States for handling category Delete
+class CategoryDeleteLoadingState extends CategoryStates {}
+class CategoryDeletedState extends CategoryStates {}
+class CategoryDeleteErrorState extends CategoryStates {
+  final String message;
+  CategoryDeleteErrorState(this.message);
+}
 /// States for handling category retrieval
 class GetCategoryDataLoadingState extends CategoryStates {}
 class GetCategoryDataSuccessState extends CategoryStates {

@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/util/responsive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +18,7 @@ class ExploreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<CategoryCubit>(
       create: (context)=>CategoryCubit()..getBudgetCategories(),
-      child: const Scaffold(
+      child:  Scaffold(
         backgroundColor: Color(0xFFF5F7F8),
         body: Column(
           // padding: EdgeInsets.zero,
@@ -27,11 +28,11 @@ class ExploreScreen extends StatelessWidget {
               child: SingleChildScrollView(
               
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal:Responsive.width(5)),
                   child: Column(
                     children: [
                       CategoryEditActionRow(),
-                      SizedBox(height: 10),
+                      SizedBox(height: Responsive.height(2)),
                       BudgetCategoriesListExploreScreen(),
                     ],
                   ),

@@ -7,13 +7,13 @@ import '../repositories/category_repository.dart';
 
 class DeleteCategoryDataUseCase{
 
-  final CategoryRepository budgetRepository;
+  final CategoryRepository categoryRepository;
   final int categoryId;
 
-  DeleteCategoryDataUseCase(this.categoryId, {required this.budgetRepository});
+  DeleteCategoryDataUseCase( {required this.categoryId,required this.categoryRepository});
 
-  Future <Either<Failure,Unit>> call()async{
+  Future <Either<Failure,Unit>> call(categoryId)async{
 
-    return await budgetRepository.deleteCategoryData( categoryId);
+    return await categoryRepository.deleteCategoryData(categoryId);
   }
 }
