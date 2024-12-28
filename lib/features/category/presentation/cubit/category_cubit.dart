@@ -8,8 +8,9 @@ import '../../data/repositories/category_repository_imp.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/usecases/delete_category_data_usecase.dart';
 import '../../domain/usecases/edit_category_data_usecase.dart';
-import '../../domain/usecases/get_category_data_usecase.dart';
-import '../../domain/usecases/insert_category_data_usecase.dart';
+import '../../domain/usecases/get_categories_data_usecase.dart';
+import '../../domain/usecases/insert_new_category_usecase.dart';
+import '../../domain/usecases/set_categories_data_usecase.dart';
 import '../../domain/usecases/update-spent-amount-usecase.dart';
 import 'category_states.dart';
 
@@ -17,13 +18,18 @@ class CategoryCubit extends Cubit<CategoryStates> {
   CategoryCubit() : super(CategoryInitialState());
 
   static CategoryCubit get(context) => BlocProvider.of(context);
-
-  List<CategoryEntity> categories = [];
+double monthlySalary=0;
+  List<CategoryEntity> fetchedCategories = [];
   double? spentAmount;
+
+  void addAndGetCategoriesList(newCategory){
+    fetchedCategories.add(newCategory);
+    emit(AddSettingUpCategoryState());
+  }
 
   Future<void> getBudgetCategories() async {
     emit(GetCategoryDataLoadingState()); // حالة التحميل
-    final response = await GetCategoryDataUseCase(
+    final response = await GetCategoriesDataUseCase(
       categoryRepository: CategoryRepositoryImpl(
         localDataSource: CategoryDataSource(),
       ),
@@ -35,8 +41,9 @@ class CategoryCubit extends Cubit<CategoryStates> {
         emit(GetCategoryDataErrorState(errorMessage: failure.message));
       },
           (data) {
-        categories = data; // تخزين البيانات
-        emit(GetCategoryDataSuccessState(items: data));
+        fetchedCategories = categoriesList=data;
+        emit(GetCategoryDataSuccessState(categories: data));
+
       },
     );
     print("=====================Alhamdulillah===============================");
@@ -64,7 +71,28 @@ class CategoryCubit extends Cubit<CategoryStates> {
       },
     );
   }
+  Future<void> initializeCategories(List <CategoryEntity> categories) async {
+    emit(CategoryInsertionLoadingState());
+    final useCase = SetCategoriesDataUseCase(
+      categoryRepository: CategoryRepositoryImpl(
+        localDataSource: CategoryDataSource(),
+      ),
+    );
 
+    final result = await useCase.call(categories);
+
+    result.fold(
+          (failure) {
+        print('Error occurred: \${failure.message}');
+        emit(CategoryInsertionErrorState(failure.message));
+      },
+          (_) {
+        print('Category inserted successfully');
+        emit(CategoryInsertedState());
+        getBudgetCategories(); // تحديث الفئات بعد الإضافة
+      },
+    );
+  }
   Future<void> updateCategoryData(CategoryEntity item, int categoryId) async {
     emit(CategoryUpdateLoadingState()); // حالة التحميل
     final useCase = UpdateCategoryDataUseCase(
@@ -107,7 +135,6 @@ class CategoryCubit extends Cubit<CategoryStates> {
       },
     );
   }
-
   Future<void> updateSpentAmount(int categoryId, double spentAmount) async {
     emit(UpdateSpentAmountLoadingState()); // حالة التحميل
     final useCase = UpdateSpentAmountUseCase(
@@ -130,16 +157,16 @@ class CategoryCubit extends Cubit<CategoryStates> {
     );
   }
 
-  String categoryIcon = "";
+  String? categoryIcon ;
   void changeCategoryIcon(int index) {
     categoryIcon = iconImages[index];
-    emit(ChangeIconState(items: categories));
+    emit(ChangeIconState(items: fetchedCategories));
   }
 
   Color categoryColor = Colors.blueAccent;
   void changeCategoryColor(Color color) {
     categoryColor = color;
-    emit(ChangeColorState(items: categories));
+    emit(ChangeColorState(items: fetchedCategories));
   }
 
   bool isCategoryEditMode=false;
@@ -148,8 +175,8 @@ class CategoryCubit extends Cubit<CategoryStates> {
     getBudgetCategories();
     emit(ToggleCategoryEditModeState());
   }
-String? categoryName;
-double? allocatedAmount;
+String? editedCategoryName;
+double? editedAllocatedAmount;
 
 
 

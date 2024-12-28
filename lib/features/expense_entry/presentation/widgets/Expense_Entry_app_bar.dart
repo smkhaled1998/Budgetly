@@ -14,7 +14,7 @@ class ExpenseEntryAppBar extends StatelessWidget implements PreferredSizeWidget 
       actions: [
         IconButton(
           onPressed: () {
-           final result= CategoryCubit.get(context).categories;
+           final result= CategoryCubit.get(context).fetchedCategories;
 
             print("spent Amount of ${result[0].name}=${result[0].spentAmount}" );
             print("Search icon pressed");

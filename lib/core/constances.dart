@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/category/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
 
 Map<String, Map<String, String>> currencies = {
@@ -90,3 +91,6 @@ Color parseColorFromString(String colorString) {
     return Colors.blue; // لون افتراضي في حالة الخطأ
   }
 }
+
+List<CategoryEntity> categoriesList=[];
+

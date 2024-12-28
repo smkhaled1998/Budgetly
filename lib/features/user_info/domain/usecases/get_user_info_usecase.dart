@@ -11,7 +11,7 @@ class GetUserInfoUseCase{
 
   GetUserInfoUseCase({required this.userInfoRepository});
 
-  Future <Either<Failure,List<UserInfoEntity>>> call()async{
+  Future<Either<Failure, List<UserInfoEntity>>> call()async{
 
     return await userInfoRepository.getUserInfo();
   }

@@ -1,5 +1,4 @@
-import 'package:budget_buddy/features/category/presentation/screens/explore_screen.dart';
-import 'package:budget_buddy/features/category/presentation/screens/main_navigator.dart';
+import 'package:budget_buddy/core/main_navigator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

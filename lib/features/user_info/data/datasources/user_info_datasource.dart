@@ -26,7 +26,7 @@ class UserInfoDataSource {
 
   Future<int> insertUserData({
   required String currency,
-  required String monthlyBudget,
+  required String monthlySalary,
   required String userImg,
   required String userName,
 }) async {
@@ -35,7 +35,7 @@ class UserInfoDataSource {
     try {
       int response = await myDb!.insert("userInfo",{
         'currency':currency,
-        'monthlyBudget':monthlyBudget,
+        'monthlySalary':monthlySalary,
         'userImg':userImg,
         'userName':userName,
       });

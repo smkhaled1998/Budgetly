@@ -4,12 +4,12 @@ abstract class UserInfoEntity{
   final String userName;
   final String? userImg;
   final String currency;
-  final String monthlyBudget;
+  final String monthlySalary;
   final String spentAmount;
 
   UserInfoEntity({
      this.userId,
-    required this.monthlyBudget,
+    required this.monthlySalary,
      this.currency="",
      this.spentAmount="",
      this.userImg,

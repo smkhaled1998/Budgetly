@@ -32,8 +32,8 @@ class CategoryDeleteErrorState extends CategoryStates {
 /// States for handling category retrieval
 class GetCategoryDataLoadingState extends CategoryStates {}
 class GetCategoryDataSuccessState extends CategoryStates {
-  final List<CategoryEntity> items;
-  GetCategoryDataSuccessState({required this.items});
+  final List<CategoryEntity> categories;
+  GetCategoryDataSuccessState({required this.categories});
 }
 class GetCategoryDataErrorState extends CategoryStates {
   final String errorMessage;
@@ -73,3 +73,5 @@ class UpdateSpentAmountErrorState extends CategoryStates {
 }
 
 class ToggleCategoryEditModeState extends CategoryStates {}
+class AddSettingUpCategoryState extends CategoryStates {}
+class AddSettingUpCategoryLoadingState extends CategoryStates {}

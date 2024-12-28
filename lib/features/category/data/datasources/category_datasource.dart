@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/category/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../../../core/database_helper.dart';
@@ -71,6 +72,32 @@ class CategoryDataSource {
     }
   }
 
+  Future<int> initializeCategoriesData({
+    required List<CategoryEntity> categories,
+  }) async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      // استخدام Batch لإضافة جميع الفئات دفعة واحدة
+      Batch batch = myDb!.batch();
+
+      for (var category in categories) {
+        batch.update('category', {
+          'name': category.name,
+          'color': category.color,
+          'icon': category.icon,
+          'allocatedAmount': category.allocatedAmount.toString(),
+          'spentAmount': category.spentAmount.toString(),
+        });
+      }
+
+      // تنفيذ العمليات دفعة واحدة
+      await batch.commit();
+      print("All categories added successfully");
+      return categories.length;
+    } on DatabaseException catch (e) {
+      throw DataInsertionException("Failed to insert categories data: ${e.toString()}");
+    }
+  }
 
   Future<int> updateSpentAmount({
     required int categoryId,

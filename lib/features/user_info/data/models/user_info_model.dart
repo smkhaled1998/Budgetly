@@ -5,7 +5,7 @@ class UserInfoModel extends UserInfoEntity {
     super.userId,
      super.userName,
     super.userImg,
-    required super.monthlyBudget,
+    required super.monthlySalary,
     super.currency,
     super.spentAmount,
   });
@@ -13,7 +13,7 @@ class UserInfoModel extends UserInfoEntity {
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     return UserInfoModel(
         userId: json["userId"],
-        monthlyBudget: json["monthlyBudget"],
+        monthlySalary: json["monthlySalary"],
         currency: json["currency"],
         spentAmount: json["spentAmount"],
         userImg: json["userImg"],
@@ -24,7 +24,7 @@ class UserInfoModel extends UserInfoEntity {
     return {
       "name": userName,
       "userImg": userImg,
-      "monthlyBudget": monthlyBudget,
+      "monthlySalary": monthlySalary,
       "spentAmount": spentAmount,
       "currency": currency,
       "userId": userId,

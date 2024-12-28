@@ -1,9 +1,10 @@
 
-abstract class SettingUpStates{}
+abstract class SettingStates{}
 
-class SettingInitialState extends SettingUpStates {}
+class SettingInitialState extends SettingStates {}
 
-class GettingDataSuccessState extends SettingUpStates {}
-class GettingDataLoadingState extends SettingUpStates {}
-class GettingDataErrorState extends SettingUpStates {}
+class GettingDataSuccessState extends SettingStates {}
+class GettingDataLoadingState extends SettingStates {}
+class GettingDataErrorState extends SettingStates {}
+class SelectCurrencyState extends SettingStates {}
 

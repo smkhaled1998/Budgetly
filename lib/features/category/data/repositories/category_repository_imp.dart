@@ -25,7 +25,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> insertCategoryData(CategoryEntity item) async {
+  Future<Either<Failure, Unit>> insertNewCategory(CategoryEntity item) async {
     try {
       await localDataSource.insertNewCategory(
         name: item.name!,
@@ -98,4 +98,19 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return Left(UnknownFailure(errorMessage: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> setCategoriesData({
+    required List<CategoryEntity> categories,
+  }) async {
+    try {
+      await localDataSource.initializeCategoriesData(categories: categories);
+      return const Right(unit);
+    } on DatabaseException catch (e) {
+      return Left(DataInsertionFailure(errorMessage: e.toString()));
+    } catch (e) {
+      return Left(UnknownFailure(errorMessage: e.toString()));
+    }
+  }
+
 }

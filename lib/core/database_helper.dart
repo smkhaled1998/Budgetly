@@ -1,4 +1,3 @@
-// lib/core/database_helper.dart
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'error/exceptions.dart';
@@ -51,7 +50,7 @@ class DatabaseHelper {
       await db.execute('''CREATE TABLE userInfo (
         userId INTEGER PRIMARY KEY AUTOINCREMENT,
         userName TEXT NOT NULL,
-        monthlyBudget REAL NOT NULL,
+        monthlySalary REAL NOT NULL,
         currency TEXT NOT NULL,
         spentAmount REAL NOT NULL DEFAULT 0
       )''');

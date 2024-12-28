@@ -10,8 +10,12 @@ abstract class CategoryRepository{
     required int categoryId,
     required CategoryEntity item,
   });
+
+  Future<Either<Failure, Unit>> setCategoriesData( {
+    required List<CategoryEntity> categories,
+  });
   Future<Either<Failure,Unit>> deleteCategoryData(int categoryId);
-  Future<Either<Failure,Unit>> insertCategoryData(CategoryEntity item);
+  Future<Either<Failure,Unit>> insertNewCategory(CategoryEntity item);
   Future<Either<Failure,Unit>> updateSpentAmount(int categoryId, double spentAmount);
 
 

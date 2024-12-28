@@ -39,7 +39,7 @@ class ExpenseEntryScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 else if (state is GetCategoryDataSuccessState) {
-                  final categories = state.items;
+                  final categories = state.categories;
                   return ListView.separated(
                     itemCount: categories.length,
                     itemBuilder: (context, index) {

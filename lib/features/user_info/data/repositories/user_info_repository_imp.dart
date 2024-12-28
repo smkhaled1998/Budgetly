@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/user_info/data/datasources/cashed_helper.dart';
 import 'package:budget_buddy/features/user_info/data/models/user_info_model.dart';
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
@@ -9,18 +10,19 @@ import '../datasources/user_info_datasource.dart';
 class UserInfoRepositoryImpl implements UserInfoRepository {
   final UserInfoDataSource localDataSource;
 
-  UserInfoRepositoryImpl({required this.localDataSource});
+  UserInfoRepositoryImpl( {required this.localDataSource});
 
   @override
   Future<Either<Failure, List<UserInfoEntity>>> getUserInfo() async {
     try {
       final response = await localDataSource.getUserData();
 
+
       final users = response.map((data) => UserInfoModel(
         userId: data['userId'],
         userName: data['userName'],
         userImg: data['userImg'],
-        monthlyBudget: data['monthlyBudget'],
+        monthlySalary: data['monthlySalary'],
         currency: data['currency'],
         spentAmount: data['spentAmount'],
       )).toList();
@@ -41,7 +43,7 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
     try {
       await localDataSource.insertUserData(
         currency: user.currency,
-        monthlyBudget: user.monthlyBudget,
+          monthlySalary: user.monthlySalary,
          userImg: user.userImg??"",
         userName:user.userName
       );
@@ -62,7 +64,7 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
     try {
       await localDataSource.updateUserData('''
         UPDATE `userInfo`
-        SET `userName` = "${user.userName}", `userImg` = "${user.userImg}", `monthlyBudget` = "${user.monthlyBudget}", `currency` = "${user.currency}", `spentAmount` = "${user.spentAmount}"
+        SET `userName` = "${user.userName}", `userImg` = "${user.userImg}", `monthlySalary` = "${user.monthlySalary}", `currency` = "${user.currency}", `spentAmount` = "${user.spentAmount}"
         WHERE `userId` = ${user.userId}
       ''');
       return const Right(unit);
