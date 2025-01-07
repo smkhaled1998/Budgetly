@@ -53,14 +53,7 @@ class ChangeColorState extends CategoryStates {
   ChangeColorState({required this.items});
 
 }
-class DefineCalculatedValueState extends CategoryStates {}
-class DefineSelectedCategoryStateName extends CategoryStates {}
 
-/// States related to adding a new category
-class NewCategoryAddedState extends CategoryStates {
-  final CategoryEntity categoryEntity;
-  NewCategoryAddedState(this.categoryEntity);
-}
 
 
 class UpdateSpentAmountLoadingState extends CategoryStates {}
@@ -75,3 +68,5 @@ class UpdateSpentAmountErrorState extends CategoryStates {
 class ToggleCategoryEditModeState extends CategoryStates {}
 class AddSettingUpCategoryState extends CategoryStates {}
 class AddSettingUpCategoryLoadingState extends CategoryStates {}
+
+class UpdateRemainingSalaryState extends CategoryStates {}

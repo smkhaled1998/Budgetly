@@ -92,5 +92,5 @@ Color parseColorFromString(String colorString) {
   }
 }
 
-List<CategoryEntity> categoriesList=[];
+// List<CategoryEntity> categoriesList=[];
 

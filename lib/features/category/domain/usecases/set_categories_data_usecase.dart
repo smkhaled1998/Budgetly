@@ -4,10 +4,10 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 
-class SetCategoriesDataUseCase{
+class InitializeCategoriesUseCase{
   final CategoryRepository categoryRepository;
 
-  SetCategoriesDataUseCase({required this.categoryRepository});
+  InitializeCategoriesUseCase({required this.categoryRepository});
 
   Future<Either<Failure, Unit>> call(List<CategoryEntity> categories) async {
     return await categoryRepository.setCategoriesData(categories: categories);

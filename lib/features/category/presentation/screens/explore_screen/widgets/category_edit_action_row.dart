@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/themes/app_color.dart';
+import '../../../../domain/entities/category_entity.dart';
 import '../../../cubit/category_cubit.dart';
 import '../../category_manager/screens/categories_manager_screen.dart';
 
@@ -15,13 +17,22 @@ class CategoryEditActionRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          "Budgets",
-          style: GoogleFonts.abel(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-            color: AppColor.accentColor,
-            letterSpacing: 1.5,
+        GestureDetector(
+          onTap: (){
+            CategoryCubit categoryCubit=CategoryCubit.get(context);
+            for(CategoryEntity categoryEntity in categoryCubit.fetchedCategories)
+            {
+              print("name before is ${categoryEntity.name}");
+            }
+          },
+          child: Text(
+            "Budgets",
+            style: GoogleFonts.abel(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+              color: AppColor.accentColor,
+              letterSpacing: 1.5,
+            ),
           ),
         ),
         MaterialButton(

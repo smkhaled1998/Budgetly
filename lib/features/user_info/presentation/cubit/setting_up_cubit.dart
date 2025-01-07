@@ -33,4 +33,6 @@ double monthlySalary=0;
     selectedCurrency=value;
     emit(SelectCurrencyState());
   }
+
+
 }

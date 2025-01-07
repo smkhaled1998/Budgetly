@@ -6,28 +6,6 @@ import '../cubit/category_cubit.dart';
 import '../cubit/category_states.dart';
 import 'style_picker_dialog.dart';
 
-class ColorPickerDialog {
-  static void show(BuildContext context, CategoryCubit categoryCubit) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StylePickerDialog(
-          title: "Choose a Color",
-          child: SizedBox(
-            height: 400,
-            child: MaterialPicker(
-              pickerColor: categoryCubit.categoryColor,
-              onColorChanged: (color) {
-                categoryCubit.changeCategoryColor(color);
-              },
-            ),
-          ),
-          onConfirm: () => Navigator.pop(context),
-        );
-      },
-    );
-  }
-}
 
 class IconPickerDialog {
   static void show(BuildContext context, CategoryCubit categoryCubit) {
@@ -101,6 +79,29 @@ class IconItem extends StatelessWidget {
           color: isSelected ? Theme.of(context).primaryColor : null,
         ),
       ),
+    );
+  }
+}
+
+class ColorPickerDialog {
+  static void show(BuildContext context, CategoryCubit categoryCubit) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StylePickerDialog(
+          title: "Choose a Color",
+          child: SizedBox(
+            height: 400,
+            child: MaterialPicker(
+              pickerColor: categoryCubit.categoryColor,
+              onColorChanged: (color) {
+                categoryCubit.changeCategoryColor(color);
+              },
+            ),
+          ),
+          onConfirm: () => Navigator.pop(context),
+        );
+      },
     );
   }
 }

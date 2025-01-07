@@ -1,9 +1,9 @@
+import 'package:budget_buddy/features/category/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constances.dart';
 import '../../data/datasources/category_datasource.dart';
-import '../../data/models/category_model.dart';
 import '../../data/repositories/category_repository_imp.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/usecases/delete_category_data_usecase.dart';
@@ -18,14 +18,30 @@ class CategoryCubit extends Cubit<CategoryStates> {
   CategoryCubit() : super(CategoryInitialState());
 
   static CategoryCubit get(context) => BlocProvider.of(context);
-double monthlySalary=0;
   List<CategoryEntity> fetchedCategories = [];
+  void addNewSettingUpCategory(newCategoryEntity){
+    fetchedCategories.add(newCategoryEntity);
+
+    emit(ChangeIconState(items: fetchedCategories));
+  }
+  // void updateAllocatedAmount(int categoryId, double newAmount) {
+  //   final index = fetchedCategories.indexWhere((category) => category.categoryId == categoryId);
+  //   if (index != -1) {
+  //     fetchedCategories[index] = CategoryModel(
+  //       categoryId: fetchedCategories[index].categoryId,
+  //       name: fetchedCategories[index].name,
+  //       color: fetchedCategories[index].color,
+  //       icon: fetchedCategories[index].icon,
+  //       allocatedAmount: newAmount,
+  //       spentAmount: fetchedCategories[index].spentAmount,
+  //     );
+  //     emit(CategoryUpdatedState());
+  //   }
+  // }
+
   double? spentAmount;
 
-  void addAndGetCategoriesList(newCategory){
-    fetchedCategories.add(newCategory);
-    emit(AddSettingUpCategoryState());
-  }
+
 
   Future<void> getBudgetCategories() async {
     emit(GetCategoryDataLoadingState()); // حالة التحميل
@@ -41,23 +57,22 @@ double monthlySalary=0;
         emit(GetCategoryDataErrorState(errorMessage: failure.message));
       },
           (data) {
-        fetchedCategories = categoriesList=data;
+        fetchedCategories =data;
         emit(GetCategoryDataSuccessState(categories: data));
 
       },
     );
     print("=====================Alhamdulillah===============================");
   }
-
-  Future<void> insertNewCategory(CategoryEntity item) async {
-    emit(CategoryInsertionLoadingState()); // حالة التحميل
-    final useCase = InsertCategoryDataUseCase(
+  Future<void> initializeCategories(List <CategoryEntity> categories) async {
+    emit(CategoryInsertionLoadingState());
+    final useCase = InitializeCategoriesUseCase(
       categoryRepository: CategoryRepositoryImpl(
         localDataSource: CategoryDataSource(),
       ),
     );
 
-    final result = await useCase.call(item);
+    final result = await useCase.call(categories);
 
     result.fold(
           (failure) {
@@ -71,15 +86,17 @@ double monthlySalary=0;
       },
     );
   }
-  Future<void> initializeCategories(List <CategoryEntity> categories) async {
-    emit(CategoryInsertionLoadingState());
-    final useCase = SetCategoriesDataUseCase(
+
+
+  Future<void> insertNewCategory(CategoryEntity item) async {
+    emit(CategoryInsertionLoadingState()); // حالة التحميل
+    final useCase = InsertCategoryDataUseCase(
       categoryRepository: CategoryRepositoryImpl(
         localDataSource: CategoryDataSource(),
       ),
     );
 
-    final result = await useCase.call(categories);
+    final result = await useCase.call(item);
 
     result.fold(
           (failure) {
@@ -114,6 +131,7 @@ double monthlySalary=0;
       },
     );
   }
+
   Future<void> deleteCategoryData(int categoryId) async {
     emit(CategoryDeleteLoadingState()); // حالة التحميل
     final useCase = DeleteCategoryDataUseCase(
@@ -175,8 +193,20 @@ double monthlySalary=0;
     getBudgetCategories();
     emit(ToggleCategoryEditModeState());
   }
-String? editedCategoryName;
-double? editedAllocatedAmount;
+  String? editedCategoryName;
+  double? editedAllocatedAmount;
+
+  double remainingSalary=0.0;
+  int? categoryId;
+  void addToRemainingSalary(double difference) {
+    remainingSalary += difference;
+   emit(UpdateRemainingSalaryState());
+  }
+
+  // void setRemainingSalary(double value) {
+  //   remainingSalary = value;
+  //   emit(UpdateRemainingSalaryState());
+  // }
 
 
 

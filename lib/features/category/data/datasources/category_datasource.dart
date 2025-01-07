@@ -77,25 +77,52 @@ class CategoryDataSource {
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
-      // استخدام Batch لإضافة جميع الفئات دفعة واحدة
+      // استخدام Batch لإضافة جميع الفئات أو تحديثها
       Batch batch = myDb!.batch();
 
       for (var category in categories) {
-        batch.update('category', {
-          'name': category.name,
-          'color': category.color,
-          'icon': category.icon,
-          'allocatedAmount': category.allocatedAmount.toString(),
-          'spentAmount': category.spentAmount.toString(),
-        });
+        // التأكد من وجود الفئة في قاعدة البيانات
+        final existingCategory = await myDb.query(
+          'category',
+          where: 'categoryId = ?',
+          whereArgs: [category.categoryId],
+        );
+
+        if (existingCategory.isNotEmpty) {
+          // تحديث السجل إذا كان موجودًا
+          batch.update(
+            'category',
+            {
+              'name': category.name,
+              'color': category.color,
+              'icon': category.icon,
+              'allocatedAmount': category.allocatedAmount.toString(),
+              'spentAmount': category.spentAmount.toString(),
+            },
+            where: 'categoryId = ?',
+            whereArgs: [category.categoryId],
+          );
+        } else {
+          // إدخال سجل جديد إذا لم يكن موجودًا
+          batch.insert(
+            'category',
+            {
+              'name': category.name,
+              'color': category.color,
+              'icon': category.icon,
+              'allocatedAmount': category.allocatedAmount.toString(),
+              'spentAmount': category.spentAmount.toString(),
+            },
+          );
+        }
       }
 
       // تنفيذ العمليات دفعة واحدة
-      await batch.commit();
-      print("All categories added successfully");
+      await batch.commit(noResult: true);
+      print("All categories initialized/updated successfully");
       return categories.length;
     } on DatabaseException catch (e) {
-      throw DataInsertionException("Failed to insert categories data: ${e.toString()}");
+      throw DataInsertionException("Failed to initialize categories data: ${e.toString()}");
     }
   }
 

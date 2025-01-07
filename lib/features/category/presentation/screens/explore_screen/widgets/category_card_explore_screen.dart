@@ -19,15 +19,19 @@ class BudgetCategoriesListExploreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryCubit, CategoryStates>(
       builder: (context, state) {
-        CategoryCubit categoryCubit=BlocProvider.of(context);
-        if (state is GetCategoryDataSuccessState) {
+        if (state is GetCategoryDataSuccessState|| state is ChangeIconState) {
+          final categoryCubit = CategoryCubit.get(context);
+
+          final categories = categoryCubit.fetchedCategories;
+
+
           return ListView.builder(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.categories.length,
+            itemCount: categories.length,
             itemBuilder: (context, index) {
-              final category=state.categories[index];
+              final category=categories[index];
               return Container(
                 padding: const EdgeInsets.all(15),
                 margin: const EdgeInsets.only(bottom: 15),
@@ -124,7 +128,5 @@ class BudgetCategoriesListExploreScreen extends StatelessWidget {
       },
     );
   }
-
-
 
 }

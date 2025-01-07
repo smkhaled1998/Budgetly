@@ -7,7 +7,7 @@ import '../../../../../../../core/themes/app_color.dart';
 
 import '../../../cubit/category_cubit.dart';
 import '../../../cubit/category_states.dart';
-import '../../../widgets/new_category_dialog.dart';
+import '../../../widgets/category_creation.dart';
 import '../widgets/category_manager_list_item.dart';
 
 class CategoriesManagerScreen extends StatelessWidget {

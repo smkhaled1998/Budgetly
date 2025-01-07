@@ -1,15 +1,19 @@
 import 'package:budget_buddy/core/main_navigator.dart';
 import 'package:budget_buddy/core/themes/app_color.dart';
+import 'package:budget_buddy/features/category/presentation/cubit/category_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-import '../../../widgets/new_category_dialog.dart';
+import '../../../../domain/entities/category_entity.dart';
+import '../../../widgets/category_creation.dart';
 
 class CustomSetUpBottomBar extends StatelessWidget {
-  const CustomSetUpBottomBar({Key? key}) : super(key: key);
+  const CustomSetUpBottomBar({Key? key, required this.categoriesList}) : super(key: key);
+
+  final List<CategoryEntity> categoriesList;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +33,20 @@ class CustomSetUpBottomBar extends StatelessWidget {
         children: [
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                CategoryCubit categoryCubit = CategoryCubit.get(context);
 
-                Navigator.push(context,   MaterialPageRoute(builder: (ctx)=>MainNavigator()));
+                // Initialize/update all categories at once
+                await categoryCubit.initializeCategories(categoryCubit.fetchedCategories);
+
+                // Navigate to main screen after successful update
+                if (context.mounted) {
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (ctx) => const MainNavigator())
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.primaryColor,

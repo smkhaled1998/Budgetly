@@ -1,54 +1,40 @@
 import 'package:budget_buddy/core/themes/app_color.dart';
 import 'package:budget_buddy/features/category/presentation/cubit/category_cubit.dart';
-import 'package:budget_buddy/features/user_info/presentation/cubit/setting_up_cubit.dart';
-import 'package:budget_buddy/features/user_info/presentation/cubit/setting_up_states.dart';
+import 'package:budget_buddy/features/category/presentation/cubit/category_states.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../widgets/new_category_modal_bottom_sheet.dart';
+import '../../../../../../core/constances.dart';
 import '../widgets/category_slicing_card_list.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class CategorySlicingScreen extends StatelessWidget {
-  final double remainingBudget = 1800;
   final double? monthlySalary;
+  final String? currency;
 
-  const CategorySlicingScreen({super.key, required this.monthlySalary});
+  const CategorySlicingScreen({super.key, required this.monthlySalary, required this.currency});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider( create: (context) => CategoryCubit()..getBudgetCategories(),),
-        BlocProvider( create: (context) => SettingCubit()),
-
-
-      ],
-      child: Scaffold(
-        backgroundColor: AppColor.backgroundColor,
-        body: SafeArea(
-          child: Column(
-            children: [
-              BlocBuilder<SettingCubit,SettingStates>(
-               builder: (context,state) {
-                 SettingCubit settingCubit=SettingCubit.get(context);
-                 settingCubit.monthlySalary=monthlySalary!;
-                  return _buildHeaderSection(settingCubit);
-                }
-              ),
-              Expanded(
-                child: CategorySlicingCardList(),
-              ),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: AppColor.backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeaderSection(context),
+            Expanded(
+              child: CategorySlicingCardList(),
+            ),
+          ],
         ),
-        bottomNavigationBar: const CustomSetUpBottomBar(),
       ),
+      bottomNavigationBar: const CustomSetUpBottomBar(categoriesList: [],),
     );
   }
 
-  Widget _buildHeaderSection(SettingCubit settingCubit) {
+  Widget _buildHeaderSection(context) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -89,7 +75,7 @@ class CategorySlicingScreen extends StatelessWidget {
                   ),
                   const Gap(4),
                   Text(
-                    "\$${settingCubit.monthlySalary.toStringAsFixed(2)}",
+                    "${currencies[currency]!['currencySymbol']}$monthlySalary",
                     style: GoogleFonts.poppins(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -104,7 +90,7 @@ class CategorySlicingScreen extends StatelessWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.account_balance_wallet,
                   color: Colors.white,
                   size: 28,
@@ -125,39 +111,45 @@ class CategorySlicingScreen extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: BlocBuilder<CategoryCubit,CategoryStates>(
+              builder: (context,state) {
+                CategoryCubit categoryCubit=CategoryCubit.get(context);
+
+                return Column(
                   children: [
-                    Text(
-                      "Remaining",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Remaining",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          "${currencies[currency]!['currencySymbol']}${categoryCubit.remainingSalary.toStringAsFixed(2)}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: categoryCubit.remainingSalary > 0 ? AppColor.primaryColor : Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "\$${remainingBudget.toStringAsFixed(2)}",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: remainingBudget > 0 ? AppColor.primaryColor : Colors.red,
+                    const Gap(10),
+                    LinearProgressIndicator(
+                      value: (monthlySalary! - categoryCubit.remainingSalary) / monthlySalary!,
+                      backgroundColor: Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        categoryCubit.remainingSalary > 0 ? AppColor.primaryColor : Colors.red,
                       ),
+                      borderRadius: BorderRadius.circular(10),
+                      minHeight: 8,
                     ),
                   ],
-                ),
-                const Gap(10),
-                LinearProgressIndicator(
-                  value: (settingCubit.monthlySalary - remainingBudget) / settingCubit.monthlySalary!,
-                  backgroundColor: Colors.grey[200],
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    remainingBudget > 0 ? AppColor.primaryColor : Colors.red,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  minHeight: 8,
-                ),
-              ],
+                );
+              }
             ),
           ),
         ],
