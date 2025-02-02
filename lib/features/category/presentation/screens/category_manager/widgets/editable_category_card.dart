@@ -133,7 +133,7 @@ class EditableCategoryCard extends StatelessWidget {
       );
     }
     return Text(
-      categoryCubit.editedCategoryName!,
+      categoryCubit.updatedCategoryName!,
       style: const TextStyle(
         color: Colors.black,
         fontSize: 16,
@@ -167,7 +167,7 @@ class EditableCategoryCard extends StatelessWidget {
       );
     }
     return Text(
-      "Budget Slice is ${categoryCubit.editedAllocatedAmount}",
+      "Budget Slice is ${categoryCubit.updatedAllocatedAmount}",
       style: const TextStyle(
         color: AppColor.textLightColor,
         fontSize: 12,

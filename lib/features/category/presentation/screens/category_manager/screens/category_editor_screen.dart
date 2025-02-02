@@ -67,17 +67,17 @@ class CategoryEditorScreen extends StatelessWidget {
                   item: item,
                   padding: padding,
                   budgetController:budgetController ,
-                  isEditing: categoryCubit.isCategoryEditMode,
+                  isEditing: categoryCubit.isEditModeActive,
                   nameController: nameController,
                   onEditToggle: (){
-                    categoryCubit.toggleCategoryEditMode();
-                    categoryCubit.editedCategoryName=nameController.text;
-                    categoryCubit.editedAllocatedAmount = double.tryParse(budgetController.text) ?? item.allocatedAmount;
+                    categoryCubit.toggleEditMode();
+                    categoryCubit.updatedCategoryName=nameController.text;
+                    categoryCubit.updatedAllocatedAmount = double.tryParse(budgetController.text) ?? item.allocatedAmount;
                   },
                   selectedColor: item.color!,
                   selectedIcon: item.icon!,
                 ),
-                categoryCubit.isCategoryEditMode ?Container():Container(),
+                categoryCubit.isEditModeActive ?Container():Container(),
 
                 Padding(
                   padding:  EdgeInsets.symmetric(horizontal: padding),
@@ -102,10 +102,10 @@ class CategoryEditorScreen extends StatelessWidget {
                   ),
                 ),
                 const Gap(15),
-                categoryCubit.isCategoryEditMode?Container():  const Divider(
+                categoryCubit.isEditModeActive?Container():  const Divider(
                   height: 5,
                 ),
-                categoryCubit.isCategoryEditMode?Container():   _buildCategoryVisibilityWidget(),
+                categoryCubit.isEditModeActive?Container():   _buildCategoryVisibilityWidget(),
                 Container(
                   padding:  EdgeInsets.symmetric(horizontal: padding, vertical: 5),
                   width: double.infinity,
@@ -184,10 +184,10 @@ class CategoryEditorScreen extends StatelessWidget {
   }
 
   void saveUpdatedCategory(CategoryCubit categoryCubit){
-    categoryCubit.isCategoryEditMode = false;
+    categoryCubit.isEditModeActive = false;
     CategoryEntity updatedItem=CategoryModel(
-      name:categoryCubit.editedCategoryName ,
-      allocatedAmount: categoryCubit.editedAllocatedAmount,
+      name:categoryCubit.updatedCategoryName ,
+      allocatedAmount: categoryCubit.updatedAllocatedAmount,
       color: categoryCubit.categoryColor.toString(),
       icon: categoryCubit.categoryIcon,
 

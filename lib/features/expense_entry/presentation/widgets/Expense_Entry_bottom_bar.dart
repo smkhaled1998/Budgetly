@@ -103,7 +103,7 @@ class ExpenseEntryBottomBar extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               _updateSpentAmount(expenseCubit,categoryCubit);
-              categoryCubit.getBudgetCategories();
+              categoryCubit.fetchBudgetCategories();
               Navigator.push(context, MaterialPageRoute(builder: (context)=>MainNavigator()));
             },
             child: Container(
@@ -156,7 +156,7 @@ class ExpenseEntryBottomBar extends StatelessWidget {
       double spent = categoryCubit.spentAmount! +
           double.parse(expenseCubit.expenseAmount);
 
-      categoryCubit.updateSpentAmount(expenseCubit.categoryId!, spent);
+      categoryCubit.updateCategorySpending(expenseCubit.categoryId!, spent);
 
       print("Expense saved successfully");
     } else {

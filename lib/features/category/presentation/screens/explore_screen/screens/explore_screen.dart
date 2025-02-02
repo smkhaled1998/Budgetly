@@ -17,7 +17,7 @@ class ExploreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CategoryCubit>(
-      create: (context)=>CategoryCubit()..getBudgetCategories(),
+      create: (context)=>CategoryCubit()..fetchBudgetCategories(),
       child:  const Scaffold(
         backgroundColor: Color(0xFFF5F7F8),
         body: Column(

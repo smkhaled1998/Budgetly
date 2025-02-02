@@ -56,7 +56,7 @@ class CategoriesManagerScreen extends StatelessWidget {
                     ),
                     onDismissed: (direction) {
                       BlocProvider.of<CategoryCubit>(context)
-                          .deleteCategoryData(category.categoryId!);
+                          .removeCategory(category.categoryId!);
                       print("Deleted Test Done");
                     },
                     child: CategoryManagerListItem(category: category),

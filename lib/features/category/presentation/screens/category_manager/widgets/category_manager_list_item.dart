@@ -73,8 +73,8 @@ class CategoryManagerListItem extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) {
                           categoryCubit.categoryIcon=category.icon!;
-                          categoryCubit.editedCategoryName=category.name!;
-                          categoryCubit.editedAllocatedAmount=category.allocatedAmount!;
+                          categoryCubit.updatedCategoryName=category.name!;
+                          categoryCubit.updatedAllocatedAmount=category.allocatedAmount!;
                           categoryCubit.categoryColor=parseColorFromString(category.color!);
                           return BlocProvider.value(
                             value: categoryCubit,

@@ -24,7 +24,7 @@ class ExpenseEntryScreen extends StatelessWidget {
           create: (context) => ExpenseEntryCubit(),
         ),
         BlocProvider<CategoryCubit>(
-          create: (context) => CategoryCubit()..getBudgetCategories(),
+          create: (context) => CategoryCubit()..fetchBudgetCategories(),
         ),
       ],
       child: BlocBuilder<ExpenseEntryCubit, ExpenseEntryStates>(

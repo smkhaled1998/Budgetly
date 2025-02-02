@@ -43,7 +43,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
 
 
-  Future<void> getBudgetCategories() async {
+  Future<void> fetchBudgetCategories() async {
     emit(GetCategoryDataLoadingState()); // حالة التحميل
     final response = await GetCategoriesDataUseCase(
       categoryRepository: CategoryRepositoryImpl(
@@ -82,7 +82,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Category inserted successfully');
         emit(CategoryInsertedState());
-        getBudgetCategories(); // تحديث الفئات بعد الإضافة
+        fetchBudgetCategories(); // تحديث الفئات بعد الإضافة
       },
     );
   }
@@ -106,7 +106,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Category inserted successfully');
         emit(CategoryInsertedState());
-        getBudgetCategories(); // تحديث الفئات بعد الإضافة
+        fetchBudgetCategories(); // تحديث الفئات بعد الإضافة
       },
     );
   }
@@ -127,12 +127,12 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Category updated successfully');
         emit(CategoryUpdatedState());
-        getBudgetCategories(); // تحديث الفئات بعد التحديث
+        fetchBudgetCategories(); // تحديث الفئات بعد التحديث
       },
     );
   }
 
-  Future<void> deleteCategoryData(int categoryId) async {
+  Future<void> removeCategory(int categoryId) async {
     emit(CategoryDeleteLoadingState()); // حالة التحميل
     final useCase = DeleteCategoryDataUseCase(
       categoryRepository: CategoryRepositoryImpl(
@@ -149,11 +149,11 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Category updated successfully');
         emit(CategoryDeletedState());
-        getBudgetCategories(); // تحديث الفئات بعد التحديث
+        fetchBudgetCategories(); // تحديث الفئات بعد التحديث
       },
     );
   }
-  Future<void> updateSpentAmount(int categoryId, double spentAmount) async {
+  Future<void> updateCategorySpending(int categoryId, double spentAmount) async {
     emit(UpdateSpentAmountLoadingState()); // حالة التحميل
     final useCase = UpdateSpentAmountUseCase(
       categoryRepository: CategoryRepositoryImpl(
@@ -170,44 +170,62 @@ class CategoryCubit extends Cubit<CategoryStates> {
           (_) {
         print('Spent amount updated successfully');
         emit(UpdateSpentAmountSuccessState());
-        getBudgetCategories(); // تحديث الفئات بعد التحديث
+        fetchBudgetCategories(); // تحديث الفئات بعد التحديث
       },
     );
   }
 
   String? categoryIcon ;
-  void changeCategoryIcon(int index) {
+  void updateCategoryIcon(int index) {
     categoryIcon = iconImages[index];
     emit(ChangeIconState(items: fetchedCategories));
   }
 
   Color categoryColor = Colors.blueAccent;
-  void changeCategoryColor(Color color) {
+  void updateCategoryColor(Color color) {
     categoryColor = color;
     emit(ChangeColorState(items: fetchedCategories));
   }
 
-  bool isCategoryEditMode=false;
-  void toggleCategoryEditMode(){
-    isCategoryEditMode=!isCategoryEditMode;
-    getBudgetCategories();
+  bool isEditModeActive=false;
+  void toggleEditMode(){
+    isEditModeActive=!isEditModeActive;
+    fetchBudgetCategories();
     emit(ToggleCategoryEditModeState());
   }
-  String? editedCategoryName;
-  double? editedAllocatedAmount;
+  String? updatedCategoryName;
+  double? updatedAllocatedAmount;
+  double remainingBudget=0.0;
 
-  double remainingSalary=0.0;
-  int? categoryId;
-  void addToRemainingSalary(double difference) {
-    remainingSalary += difference;
+  void updateRemainingBudgetForProgressBar(double difference) {
+    remainingBudget += difference;
    emit(UpdateRemainingSalaryState());
   }
 
-  // void setRemainingSalary(double value) {
-  //   remainingSalary = value;
-  //   emit(UpdateRemainingSalaryState());
-  // }
+  ///*******************************************************/////////////
 
+  int currentCategoryIndex=0;
+  double currentCategoryValue=0;
+  double totalAllocatedBudget=0;
+  Map<int,double> allocatedCategoryAmount={};
+  void calculateCategoryAllocation(int index, double value) {
+    // Update the current category value and the map
+    currentCategoryValue += value;
 
+    allocatedCategoryAmount[index] = currentCategoryValue;
 
+    // Reset the total allocated budget before recalculating
+    totalAllocatedBudget = 0;
+
+    // Sum all values except the one being edited
+    allocatedCategoryAmount.forEach((key, val) {
+      if (key != index) {
+        totalAllocatedBudget += val;
+      }
+    });
+
+    print("currentCategoryValue = $currentCategoryValue");
+    print("allocatedCategoryAmount = $allocatedCategoryAmount");
+    print("totalAllocatedBudget = $totalAllocatedBudget");
+  }
 }

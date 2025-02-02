@@ -25,7 +25,7 @@ class CategorySlicingScreen extends StatelessWidget {
           children: [
             _buildHeaderSection(context),
             Expanded(
-              child: CategorySlicingCardList(),
+              child: CategorySlicingCardList(monthlySalary: monthlySalary!,),
             ),
           ],
         ),
@@ -128,21 +128,21 @@ class CategorySlicingScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${currencies[currency]!['currencySymbol']}${categoryCubit.remainingSalary.toStringAsFixed(2)}",
+                          "${currencies[currency]!['currencySymbol']}${categoryCubit.remainingBudget.toStringAsFixed(2)}",
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: categoryCubit.remainingSalary > 0 ? AppColor.primaryColor : Colors.red,
+                            color: categoryCubit.remainingBudget > 0 ? AppColor.primaryColor : Colors.red,
                           ),
                         ),
                       ],
                     ),
                     const Gap(10),
                     LinearProgressIndicator(
-                      value: (monthlySalary! - categoryCubit.remainingSalary) / monthlySalary!,
+                      value: (monthlySalary! - categoryCubit.remainingBudget) / monthlySalary!,
                       backgroundColor: Colors.grey[200],
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        categoryCubit.remainingSalary > 0 ? AppColor.primaryColor : Colors.red,
+                        categoryCubit.remainingBudget > 0 ? AppColor.primaryColor : Colors.red,
                       ),
                       borderRadius: BorderRadius.circular(10),
                       minHeight: 8,

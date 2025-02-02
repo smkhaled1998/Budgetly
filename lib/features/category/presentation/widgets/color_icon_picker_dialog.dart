@@ -33,7 +33,7 @@ class IconPickerDialog {
                     isSelected: categoryCubit.categoryIcon == iconImages[index],
                     onTap: () {
                       BlocProvider.of<CategoryCubit>(context)
-                          .changeCategoryIcon(index);
+                          .updateCategoryIcon(index);
                     },
                   ),
                 ),
@@ -95,7 +95,7 @@ class ColorPickerDialog {
             child: MaterialPicker(
               pickerColor: categoryCubit.categoryColor,
               onColorChanged: (color) {
-                categoryCubit.changeCategoryColor(color);
+                categoryCubit.updateCategoryColor(color);
               },
             ),
           ),

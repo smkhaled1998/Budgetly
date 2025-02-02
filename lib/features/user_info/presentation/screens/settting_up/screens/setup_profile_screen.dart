@@ -188,7 +188,7 @@ class SettingBody extends StatelessWidget {
                   // settingCubit.insertUserInfo(user);
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>
                       BlocProvider<CategoryCubit>(
-                          create: (context)=>CategoryCubit()..getBudgetCategories()..remainingSalary=monthlySalary,
+                          create: (context)=>CategoryCubit()..fetchBudgetCategories()..remainingBudget=monthlySalary=monthlySalary,
                           child: CategorySlicingScreen(monthlySalary: monthlySalary, currency: settingCubit.selectedCurrency,))));
 
                 }
