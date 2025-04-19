@@ -1,0 +1,1 @@
+C:\Flutter Projects\budget_buddy\build\app\intermediates\cxx\Debug\4q4x3t25\obj\arm64-v8a

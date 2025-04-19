@@ -1,0 +1,2 @@
+C:/Flutter Projects/budget_buddy/android/app/.cxx/Debug/4q4x3t25/x86/CMakeFiles/edit_cache.dir
+C:/Flutter Projects/budget_buddy/android/app/.cxx/Debug/4q4x3t25/x86/CMakeFiles/rebuild_cache.dir

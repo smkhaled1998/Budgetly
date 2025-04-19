@@ -1,25 +1,27 @@
-import 'package:budget_buddy/features/expense_entry/domain/entities/expense_entry_entity.dart';
 
-abstract class ExpenseEntryStates{}
+import '../../../transaction/domain/entities/transaction_entity.dart';
+
+abstract class TransactionStates{}
 
 
-class ExpenseEntryInitialState extends ExpenseEntryStates{}
+class TransactionInitialState extends TransactionStates{}
+class TogglePieChartState extends TransactionStates {}
 
-class ExpenseEntryAddedState extends ExpenseEntryStates{}
-class ExpenseEntryLoadedState extends ExpenseEntryStates{
-  ExpenseEntryLoadedState(List<ExpenseEntryEntity> entries);
+
+class ExpenseEntryAddedState extends TransactionStates{}
+class ExpenseEntryLoadedState extends TransactionStates{
+  ExpenseEntryLoadedState(List<TransactionEntity> entries);
 }
-class ExpenseEntryEditedState extends ExpenseEntryStates{}
-class ExpenseEntryDeletedState extends ExpenseEntryStates{}
+class ExpenseEntryEditedState extends TransactionStates{}
+class ExpenseEntryDeletedState extends TransactionStates{}
 
 
-class ExpenseEntryLoadingState extends ExpenseEntryStates{}
-class ValuesResetState extends ExpenseEntryStates{}
-class DefineCalculatedValueState extends ExpenseEntryStates{}
-class DefineSelectedCategoryState extends ExpenseEntryStates{}
+class ExpenseEntryLoadingState extends TransactionStates{}
+class ValuesResetState extends TransactionStates{}
+class DefineExpenseDetailsState extends TransactionStates{}
 
-class ExpenseEntryErrorState extends ExpenseEntryStates{
+class ExpenseEntryErrorState extends TransactionStates{
   ExpenseEntryErrorState(String message);
 }
-  class ExpenseEntrySuccessState extends ExpenseEntryStates{
+  class ExpenseEntrySuccessState extends TransactionStates{
 }

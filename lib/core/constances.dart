@@ -1,12 +1,7 @@
-import 'package:budget_buddy/features/category/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
 
 Map<String, Map<String, String>> currencies = {
-  "OMR": {
-    "currencyName": "Omani Rial",
-    "currencySymbol": "﷼",
-    "flag": "🇴🇲"
-  },
+  "OMR": {"currencyName": "Omani Rial", "currencySymbol": "﷼", "flag": "🇴🇲"},
   "TRY": {
     "currencyName": "Turkish Lira",
     "currencySymbol": "₺",
@@ -27,34 +22,23 @@ Map<String, Map<String, String>> currencies = {
     "currencySymbol": "د.ك",
     "flag": "🇰🇼"
   },
-
   "USD": {
     "currencyName": "United States Dollar",
     "currencySymbol": "\$",
     "flag": "🇺🇸"
   },
-  "EUR": {
-    "currencyName": "Euro",
-    "currencySymbol": "€",
-    "flag": "🇪🇺"
-  },
+  "EUR": {"currencyName": "Euro", "currencySymbol": "€", "flag": "🇪🇺"},
   "JPY": {
     "currencyName": "Japanese Yen",
     "currencySymbol": "¥",
     "flag": "🇯🇵"
   },
-
   "BRL": {
     "currencyName": "Brazilian Real",
     "currencySymbol": "R\$",
     "flag": "🇧🇷"
   },
-  "SAR": {
-    "currencyName": "Saudi Riyal",
-    "currencySymbol": "﷼",
-    "flag": "🇸🇦"
-  },
-
+  "SAR": {"currencyName": "Saudi Riyal", "currencySymbol": "﷼", "flag": "🇸🇦"},
 };
 List<String> iconImages = [
   "assets/housing.png",
@@ -78,7 +62,7 @@ Color parseColorFromString(String colorString) {
       switch (colorString) {
         case 'MaterialAccentprimary':
           return Colors.blueAccent;
-      // يمكنك إضافة المزيد من الحالات حسب الحاجة
+        // يمكنك إضافة المزيد من الحالات حسب الحاجة
         default:
           return Colors.blue; // لون افتراضي
       }
@@ -93,4 +77,3 @@ Color parseColorFromString(String colorString) {
 }
 
 // List<CategoryEntity> categoriesList=[];
-

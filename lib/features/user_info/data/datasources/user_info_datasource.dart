@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import '../../../../core/database_helper.dart';
+import '../../../../core/data/database/database_helper.dart';
 import '../../../../core/error/exceptions.dart';
 
 class UserInfoDataSource {
