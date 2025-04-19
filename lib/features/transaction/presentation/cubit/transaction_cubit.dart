@@ -5,6 +5,7 @@
 // import '../../domain/entities/transaction_entity.dart';
 // import 'transaction_states.dart';
 //
+import 'package:budget_buddy/features/transaction/presentation/cubit/transaction_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../expense_entry/presentation/cubit/expense_entry_states.dart';
@@ -15,11 +16,18 @@ class TransactionCubit extends Cubit<TransactionStates> {
   static TransactionCubit get(context) => BlocProvider.of(context);
 
   bool showPieChart = false;
+  bool isEditMode = false;
 
   void togglePieChart() {
     showPieChart = !showPieChart;
     emit(TogglePieChartState());
   }
+
+  void toggleEditMode() {
+    isEditMode = !isEditMode;
+    emit(TogglePieChartState());
+  }
+
 }
 
 //   List<TransactionEntity> fetchedCategories = [];

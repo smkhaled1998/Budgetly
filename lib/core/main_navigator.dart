@@ -28,6 +28,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
+//
 //       body: SpinCircleBottomBarHolder(
 //         bottomNavigationBar: SCBottomBarDetails(
 //             circleColors: [

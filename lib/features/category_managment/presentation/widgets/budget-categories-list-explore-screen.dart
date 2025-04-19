@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constances.dart';
 import '../../../../core/domain/entities/category_management_entity.dart';
 import '../../../../core/themes/app_color.dart';
-import '../../../transaction/presentation/screens/new_expense_screen.dart';
+import '../../../transaction/presentation/screens/new_expense_entry_screen.dart';
 
 import '../cubit/category_management_cubit.dart';
 import '../cubit/category_management_states.dart';
