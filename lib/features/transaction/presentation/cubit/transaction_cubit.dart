@@ -8,7 +8,6 @@
 import 'package:budget_buddy/features/transaction/presentation/cubit/transaction_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../expense_entry/presentation/cubit/expense_entry_states.dart';
 
 class TransactionCubit extends Cubit<TransactionStates> {
   TransactionCubit() : super(TransactionInitialState());

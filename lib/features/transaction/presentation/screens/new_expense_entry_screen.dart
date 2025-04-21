@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:budget_buddy/core/domain/entities/category_management_entity.dart';
+import 'package:budget_buddy/features/category_managment/presentation/screens/explore_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final percentSpent = categoryManagementEntity.storedSpentAmount / categoryManagementEntity.allocatedAmount!;
     final Color categoryColor = parseColorFromString(categoryManagementEntity.color ?? '#1E88E5');
+    final double remainingAmount = categoryManagementEntity.allocatedAmount! - categoryManagementEntity.storedSpentAmount;
 
     return BlocProvider(
       create: (context) => TransactionCubit(),
@@ -34,6 +36,9 @@ class NewExpenseEntryScreen extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
+               leading: IconButton(onPressed: (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=>ExploreScreen()));
+               }, icon: Icon(Icons.arrow_back_ios_new_outlined,color: Colors.white,)),
               title: Text(
                 categoryManagementEntity.name!,
                 style: const TextStyle(
@@ -45,10 +50,10 @@ class NewExpenseEntryScreen extends StatelessWidget {
               backgroundColor: AppColor.primaryColor,
               foregroundColor: Colors.black,
             ),
-            backgroundColor: Colors.grey[50],
+            backgroundColor: Colors.white,
             body: Column(
               children: [
-                _buildHeader(context, percentSpent, cubit.showPieChart, categoryColor),
+                _buildHeader(context, percentSpent, cubit.showPieChart, categoryColor, remainingAmount),
                 _buildSubcategoriesHeader(context, isEditMode),
                 _buildSubcategoriesList(context, isEditMode, categoryColor),
               ],
@@ -64,177 +69,142 @@ class NewExpenseEntryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, double percentSpent, bool showPieChart, Color categoryColor) {
-    final double remainingAmount = categoryManagementEntity.allocatedAmount! - categoryManagementEntity.storedSpentAmount;
+  Widget _buildHeader(BuildContext context, double percentSpent, bool showPieChart, Color categoryColor, double remainingAmount) {
+    final double progressValue = percentSpent.clamp(0.0, 1.0);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 1,
-            offset: const Offset(0, 3),
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Left side with category icon
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: categoryColor.withOpacity(0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.asset(
-                    categoryManagementEntity.icon!,
-                    width: 30,
-                    height: 30,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Center with category name and progress
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              categoryManagementEntity.name!,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: remainingAmount < 0
-                                  ? Colors.red.withOpacity(0.15)
-                                  : categoryColor.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              "\$${remainingAmount.toStringAsFixed(0)} left",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: remainingAmount < 0 ? Colors.red : categoryColor,
-                              ),
-                            ),
-                          ),
-                        ],
+          // Top row: Icon and Category name
+          Row(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator(
+                      value: progressValue,
+                      strokeWidth: 5,
+                      backgroundColor: Colors.grey.withOpacity(0.15),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        progressValue >= 1 ? Colors.red : categoryColor,
                       ),
-                      const SizedBox(height: 8),
-                      // Progress bar
-                      Stack(
-                        children: [
-                          // Background progress bar
-                          Container(
-                            height: 6,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: categoryColor.withOpacity(0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      categoryManagementEntity.icon!,
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          categoryManagementEntity.name!,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          // Active progress bar
-                          Container(
-                            height: 6,
-                            width: MediaQuery.of(context).size.width * 0.5 * percentSpent,
-                            decoration: BoxDecoration(
-                              color: percentSpent >= 1 ? Colors.red : categoryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: remainingAmount < 0
+                                ? Colors.red.withOpacity(0.15)
+                                : categoryColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      // Amount details with glass effect
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "\$${categoryManagementEntity.storedSpentAmount.toStringAsFixed(0)}/\$${categoryManagementEntity.allocatedAmount!.toStringAsFixed(0)}",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black.withOpacity(0.8),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    InkWell(
-                                      onTap: () => TransactionCubit.get(context).togglePieChart(),
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(0.0),
-                                        child: Icon(
-                                          Icons.pie_chart,
-                                          color: categoryColor,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    InkWell(
-                                      onTap: () {
-                                        // Edit category action
-                                      },
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(00),
-                                        child: Icon(
-                                          Icons.edit,
-                                          color: Colors.grey[600],
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          child:  Text(
+                            "\$${remainingAmount.toStringAsFixed(0)} ${remainingAmount < 0 ? 'over' : 'left'}",
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.9),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () => TransactionCubit.get(context).togglePieChart(),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.pie_chart,
+                              color: categoryColor,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        InkWell(
+                          onTap: () {
+                            // Edit category action
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
 
           // Optional pie chart
           if (showPieChart)
             Container(
               height: 180,
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(top: 20),
               child: Center(
                 child: Text(
                   "Pie Chart Here",
@@ -245,51 +215,6 @@ class NewExpenseEntryScreen extends StatelessWidget {
                 ),
               ),
             ),
-          // Bottom action bar
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: Colors.grey[50],
-          //     border: Border(
-          //       top: BorderSide(
-          //         color: Colors.grey[200]!,
-          //         width: 1,
-          //       ),
-          //     ),
-          //   ),
-          //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.end,
-          //     children: [
-          //       InkWell(
-          //         onTap: () => TransactionCubit.get(context).togglePieChart(),
-          //         borderRadius: BorderRadius.circular(8),
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Icon(
-          //             Icons.pie_chart,
-          //             color: categoryColor,
-          //             size: 20,
-          //           ),
-          //         ),
-          //       ),
-          //       const SizedBox(width: 16),
-          //       InkWell(
-          //         onTap: () {
-          //           // Edit category action
-          //         },
-          //         borderRadius: BorderRadius.circular(8),
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Icon(
-          //             Icons.edit,
-          //             color: Colors.grey[600],
-          //             size: 20,
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
@@ -297,38 +222,26 @@ class NewExpenseEntryScreen extends StatelessWidget {
 
   Widget _buildSubcategoriesHeader(BuildContext context, bool isEditMode) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      width: double.infinity,
+      color: Colors.grey[200],
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             "SUBCATEGORIES",
             style: GoogleFonts.roboto(
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-              color: Colors.blueGrey[800],
+              color: AppColor.textColor,
             ),
           ),
           IconButton(
             icon: Icon(
               isEditMode ? Icons.close : Icons.settings,
               color: Colors.blueGrey[700],
+              size: 20,
             ),
             onPressed: () {
               // Toggle edit mode
@@ -347,26 +260,11 @@ class NewExpenseEntryScreen extends StatelessWidget {
       ),
     );
   }
-
+///****************
   Widget _buildSubcategoriesList(BuildContext context, bool isEditMode, Color categoryColor) {
     return Expanded(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              blurRadius: 10,
-              spreadRadius: 1,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+        color: Colors.white,
         child: isEditMode ? _buildEditModeList(context, categoryColor) : _buildViewModeList(context, categoryColor),
       ),
     );
@@ -460,7 +358,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
       ),
     );
   }
-
+  ///****************
   void _showEditSubcategoryDialog(TransactionCubit cubit, Subcategory subCat, int index, context, Color categoryColor) {
     final TextEditingController nameController = TextEditingController(text: subCat.name);
     Color selectedColor = subCat.color;
@@ -714,18 +612,6 @@ class NewExpenseEntryScreen extends StatelessWidget {
     );
   }
 }
-
-// Helper function to parse color string
-// Color parseColorFromString(String colorString) {
-//   // Assuming color string is in format '#RRGGBB' or 'RRGGBB'
-//   try {
-//     String hexColor = colorString.startsWith('#') ? colorString : '#$colorString';
-//     return Color(int.parse(hexColor.substring(1, 7), radix: 16) + 0xFF000000);
-//   } catch (e) {
-//     // Default color if parsing fails
-//     return Colors.blue;
-//   }
-// }
 
 class Subcategory {
   final String name;

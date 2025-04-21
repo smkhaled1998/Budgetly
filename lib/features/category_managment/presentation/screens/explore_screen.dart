@@ -12,7 +12,6 @@ class ExploreScreen extends StatelessWidget {
     return BlocProvider<CategoryManagementCubit>(
       create: (context) => CategoryManagementCubit()..fetchCategories(),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF5F7F8),
         body: DefaultTabController(
           length: 2,
           child: NestedScrollView(
