@@ -1,7 +1,7 @@
 import '../../domain/entities/category_entity.dart';
 
-class CategoryManagementModel extends CategoryEntity {
-  CategoryManagementModel({
+class CategoryModel extends CategoryEntity {
+  CategoryModel({
     super.categoryId,
     required super.allocatedAmount,
     super.icon,
@@ -11,8 +11,8 @@ class CategoryManagementModel extends CategoryEntity {
   });
 
   // Factory method to create CategoryModel from JSON
-  factory CategoryManagementModel.fromJson(Map<String, dynamic> json) {
-    return CategoryManagementModel(
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
       categoryId: json["categoryId"],
       allocatedAmount: json["allocatedAmount"] != null ? (json["allocatedAmount"] as num).toDouble() : 0.0,
       icon: json["icon"],

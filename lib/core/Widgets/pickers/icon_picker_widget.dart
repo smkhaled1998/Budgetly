@@ -43,6 +43,8 @@ class IconPickerWidget extends StatelessWidget {
       Icons.airplanemode_active,
       Icons.hotel,
       Icons.beach_access,
+      Icons.savings,
+      Icons.fastfood
 
     ];
 

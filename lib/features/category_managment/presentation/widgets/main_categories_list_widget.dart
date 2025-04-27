@@ -104,14 +104,16 @@ class MainCategoriesListWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: categoryColor.withOpacity(0.12),
+              color: categoryColor,
               shape: BoxShape.circle,
             ),
-            child: Image.asset(
-              categoryEntity.icon!,
-              width: 30,
-              height: 30,
-              // color: categoryColor,
+            child:Icon(
+              IconData(
+                int.parse(categoryEntity.icon!),
+                fontFamily: 'MaterialIcons',
+              ),
+              color: Colors.white,
+              size: 24,
             ),
           ),
           const SizedBox(width: 12),

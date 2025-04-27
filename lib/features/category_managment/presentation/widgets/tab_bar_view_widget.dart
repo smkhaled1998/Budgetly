@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../category_managment/presentation/widgets/budget-categories-list-explore-screen.dart';
+import '../../../category_managment/presentation/widgets/main_categories_list_widget.dart';
 
 class TabBarViewWidget extends StatelessWidget {
   const TabBarViewWidget({Key? key}) : super(key: key);

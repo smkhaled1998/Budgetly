@@ -1,11 +1,13 @@
 import 'package:budget_buddy/core/domain/entities/category_entity.dart';
 import 'package:budget_buddy/features/category_managment/presentation/cubit/category_cubit.dart';
+import 'package:budget_buddy/features/category_managment/presentation/widgets/slicing_screen/saving_balance_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../../core/themes/app_color.dart';
 import '../../../../../core/constances.dart';
+import 'insufficient_balance_dialog.dart';
 
 class BuildSlicingCategoryCard extends StatelessWidget {
   final CategoryEntity categoryEntity;
@@ -202,7 +204,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
 
       if (categoryCubit.remainingBudget + difference < 0) {
         categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
-        // Show warning about exceeding budget (could implement a custom dialog here)
+        _showBudgetAlertDialog(context,categoryCubit);
       } else {
         categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
         previousValue[index] = newAllocation;
@@ -212,5 +214,42 @@ class BuildSlicingCategoryCard extends StatelessWidget {
       debugPrint('Invalid number format in field $index');
       debugPrint(' ${e.toString()}');
     }
+  }
+  void _showBudgetAlertDialog(
+      BuildContext context, CategoryCubit categoryCubit) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
+        return Container();
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.5, end: 1.0).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            ),
+          ),
+          child: FadeTransition(
+            opacity: animation,
+            child: BlocProvider.value(
+              value: categoryCubit,
+              child: InsufficientBalanceDialog(
+                categoryCubit: categoryCubit,
+                index: index,
+                monthlySalary: monthlySalary,
+                 controller: controller,
+                // onValueChange: ('',,){},
+                totalAllocatedBudgetBasedOnMap: categoryCubit.totalAllocatedBudgetBasedOnMap,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

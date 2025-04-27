@@ -4,6 +4,8 @@ import 'package:budget_buddy/features/category_managment/presentation/cubit/cate
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/Widgets/pickers/picker_dialog_helpers.dart';
+import '../../../../core/data/models/category_model.dart';
 import '../widgets/slicing_screen/build_header_section.dart';
 import '../widgets/slicing_screen/category_slicing_card_list.dart';
 import '../widgets/slicing_screen/custom_bottom_nav_bar.dart';
@@ -37,6 +39,7 @@ class CategorySlicingScreen extends StatelessWidget {
         ),
         bottomNavigationBar:  CustomSetUpBottomBar(categoriesList: [], categoryCubit: context.read<CategoryCubit>(),),
       ),
+
     );
   }
 

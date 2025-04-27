@@ -62,7 +62,7 @@ class PickerDialogHelpers {
                           });
                           return;
                         }
-                        CategoryEntity newCategory = CategoryManagementModel(
+                        CategoryEntity newCategory = CategoryModel(
                           name: nameController.text,
                           allocatedAmount: 0.0,
                           storedSpentAmount: 0.0,

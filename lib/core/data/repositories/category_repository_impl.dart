@@ -14,10 +14,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
   CategoryRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, List<CategoryManagementModel>>> getCategoryData() async {
+  Future<Either<Failure, List<CategoryModel>>> getCategoryData() async {
     try {
       final response = await localDataSource.getCategoriesData();
-      final categories = response.map((data) => CategoryManagementModel.fromJson(data)).toList();
+      final categories = response.map((data) => CategoryModel.fromJson(data)).toList();
       return Right(categories);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(message: e.toString()));

@@ -57,7 +57,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
     // أضف الفئة الجديدة مباشرة إلى القائمة بدون انتظار معالجة قاعدة البيانات
     // نقوم بوضع ID مؤقت، سيتم تعويضه بعد الإدراج في قاعدة البيانات
-    final tempCategory = CategoryManagementModel(
+    final tempCategory = CategoryModel(
       categoryId: DateTime.now().millisecondsSinceEpoch, // ID مؤقت
       name: item.name,
       allocatedAmount: item.allocatedAmount,
@@ -208,7 +208,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
         ? item.allocatedAmount
         : double.tryParse(budgetController) ?? item.allocatedAmount;
 
-    CategoryEntity updatedItem = CategoryManagementModel(
+    CategoryEntity updatedItem = CategoryModel(
       name: updatedName,
       allocatedAmount: updatedAmount,
       color: categoryColor.toString(),

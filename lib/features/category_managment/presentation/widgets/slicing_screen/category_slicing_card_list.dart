@@ -111,7 +111,7 @@ class CategorySlicingCardList extends StatelessWidget {
 
   void _updateCategory(CategoryCubit categoryCubit, CategoryEntity oldCategory,
       int newAmount) {
-    final updatedCategory = CategoryManagementModel(
+    final updatedCategory = CategoryModel(
       categoryId: oldCategory.categoryId,
       name: oldCategory.name,
       icon: oldCategory.icon,
