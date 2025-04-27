@@ -1,19 +1,17 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../domain/entities/category_management_entity.dart';
+import '../../domain/entities/category_entity.dart';
 import '../database/category_management_datasource.dart';
-import '../../../features/transaction/data/models/transaction_model.dart';
-import '../../../features/transaction/domain/entities/transaction_entity.dart';
+
 import '../../domain/repositories/category_management_repository.dart';
 import '../../error/failures.dart';
 import '../models/category_model.dart';
 
-class CategoryManagementRepositoryImpl implements CategoryManagementRepository {
+class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryManagementDataSource localDataSource;
 
-  CategoryManagementRepositoryImpl({required this.localDataSource});
+  CategoryRepositoryImpl({required this.localDataSource});
 
   @override
   Future<Either<Failure, List<CategoryManagementModel>>> getCategoryData() async {
@@ -29,7 +27,7 @@ class CategoryManagementRepositoryImpl implements CategoryManagementRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> insertNewCategory(CategoryManagementEntity item) async {
+  Future<Either<Failure, Unit>> insertNewCategory(CategoryEntity item) async {
     try {
       await localDataSource.insertNewCategory(
         name: item.name!,
@@ -48,7 +46,7 @@ class CategoryManagementRepositoryImpl implements CategoryManagementRepository {
   @override
   Future<Either<Failure, Unit>> updateCategoryData({
     required int categoryId,
-    required CategoryManagementEntity item,
+    required CategoryEntity item,
   }) async {
     try {
       final Map<String, dynamic> updatedFields = {};
@@ -104,9 +102,10 @@ class CategoryManagementRepositoryImpl implements CategoryManagementRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> setCategoriesData({
-    required List<CategoryManagementEntity> categories,
-  }) async {
+
+  Future<Either<Failure, Unit>> setCategoriesData(
+      List<CategoryEntity> categories, // Use positional parameter
+      ) async {
     try {
       await localDataSource.initializeCategoriesData(categories: categories);
       return const Right(unit);
@@ -116,5 +115,4 @@ class CategoryManagementRepositoryImpl implements CategoryManagementRepository {
       return Left(UnknownFailure(errorMessage: e.toString()));
     }
   }
-
 }

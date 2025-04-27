@@ -1,10 +1,11 @@
 import 'dart:ui';
-import 'package:budget_buddy/core/domain/entities/category_management_entity.dart';
+import 'package:budget_buddy/core/domain/entities/category_entity.dart';
 import 'package:budget_buddy/features/category_managment/presentation/screens/explore_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/Widgets/pickers/picker_dialog_helpers.dart';
 import '../../../../core/constances.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../expense_entry/presentation/cubit/expense_entry_states.dart';
@@ -12,7 +13,7 @@ import '../cubit/transaction_cubit.dart';
 import '../cubit/transaction_states.dart';
 
 class NewExpenseEntryScreen extends StatelessWidget {
-  final CategoryManagementEntity categoryManagementEntity;
+  final CategoryEntity categoryManagementEntity;
   final List<Subcategory> subCategories;
 
   const NewExpenseEntryScreen({
@@ -234,7 +235,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
             style: GoogleFonts.roboto(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: AppColor.textColor,
+              color: AppColor.textWhite,
             ),
           ),
           IconButton(
@@ -359,258 +360,46 @@ class NewExpenseEntryScreen extends StatelessWidget {
     );
   }
   ///****************
-  void _showEditSubcategoryDialog(TransactionCubit cubit, Subcategory subCat, int index, context, Color categoryColor) {
-    final TextEditingController nameController = TextEditingController(text: subCat.name);
-    Color selectedColor = subCat.color;
-    IconData selectedIcon = subCat.icon;
+  // Refactored methods for NewExpenseEntryScreen class
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(
-                "Edit Subcategory",
-                style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: "Name",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text("Select Color", style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 10),
-                    _buildColorPicker(selectedColor, (color) {
-                      setState(() {
-                        selectedColor = color;
-                      });
-                    }),
-                    const SizedBox(height: 20),
-                    Text("Select Icon", style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 10),
-                    _buildIconPicker(selectedIcon, selectedColor, (icon) {
-                      setState(() {
-                        selectedIcon = icon;
-                      });
-                    }),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: categoryColor,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Here you would update the subcategory in your data model
-                    Navigator.pop(context);
-                    // cubit.updateSubcategory(index, nameController.text, selectedColor, selectedIcon);
-                  },
-                  child: const Text("Save"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+// Replace the existing methods in your NewExpenseEntryScreen class with these:
+
+  void _showEditSubcategoryDialog(TransactionCubit cubit, Subcategory subCat, int index, context, Color categoryColor) async {
+    // final result = await PickerDialogHelpers.showEditPickerDialog(
+    //   pickerFunction: (){},
+    //   context: context,
+    //   title: "Edit Subcategory",
+    //   initialName: subCat.name,
+    //   initialColor: subCat.color,
+    //   initialIcon: subCat.icon,
+    //   accentColor: categoryColor,
+    // );
+    //
+    // if (result != null) {
+    //   // Here you would update the subcategory in your data model
+    //   // cubit.updateSubcategory(index, result['name'], result['color'], result['icon']);
+    // }
   }
 
-  void _showAddSubcategoryDialog(TransactionCubit cubit, context, Color categoryColor) {
-    final TextEditingController nameController = TextEditingController();
-    Color selectedColor = categoryColor;
-    IconData selectedIcon = Icons.category;
+  void _showAddSubcategoryDialog(TransactionCubit cubit, context, Color categoryColor) async {
+    // final result = await PickerDialogHelpers.showSubcategoryPickerDialog(
+    //   context: context,
+    //   title: "Add New Subcategory",
+    //   initialName: "",
+    //   initialColor: categoryColor,
+    //   initialIcon: Icons.category,
+    //   accentColor: categoryColor,
+    //   parentCategory: null,
+    //   pickerFunction: (CategoryEntity ) {  },
+    // );
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(
-                "Add New Subcategory",
-                style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: "Name",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text("Select Color", style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 10),
-                    _buildColorPicker(selectedColor, (color) {
-                      setState(() {
-                        selectedColor = color;
-                      });
-                    }),
-                    const SizedBox(height: 20),
-                    Text("Select Icon", style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 10),
-                    _buildIconPicker(selectedIcon, selectedColor, (icon) {
-                      setState(() {
-                        selectedIcon = icon;
-                      });
-                    }),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: categoryColor,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    if (nameController.text.trim().isNotEmpty) {
-                      // Here you would add the subcategory to your data model
-                      Navigator.pop(context);
-                      // cubit.addSubcategory(nameController.text, selectedColor, selectedIcon);
-                    }
-                  },
-                  child: const Text("Add"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+    // if (result != null) {
+    //   // Here you would add the subcategory to your data model
+    //   // cubit.addSubcategory(result['name'], result['color'], result['icon']);
+    // }
   }
 
-  // Color picker widget
-  Widget _buildColorPicker(Color currentColor, Function(Color) onColorSelected) {
-    final List<Color> colorOptions = [
-      Colors.red,
-      Colors.pink,
-      Colors.purple,
-      Colors.deepPurple,
-      Colors.indigo,
-      Colors.blue,
-      Colors.lightBlue,
-      Colors.cyan,
-      Colors.teal,
-      Colors.green,
-      Colors.lightGreen,
-      Colors.lime,
-      Colors.yellow,
-      Colors.amber,
-      Colors.orange,
-      Colors.deepOrange,
-      Colors.brown,
-      Colors.grey,
-      Colors.blueGrey,
-    ];
 
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: colorOptions.map((color) {
-        return GestureDetector(
-          onTap: () => onColorSelected(color),
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: currentColor == color ? Colors.white : Colors.transparent,
-                width: 2,
-              ),
-              boxShadow: currentColor == color
-                  ? [BoxShadow(color: color.withOpacity(0.6), blurRadius: 8, spreadRadius: 2)]
-                  : null,
-            ),
-            child: currentColor == color
-                ? const Icon(Icons.check, color: Colors.white, size: 20)
-                : null,
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  // Icon picker widget
-  Widget _buildIconPicker(IconData currentIcon, Color currentColor, Function(IconData) onIconSelected) {
-    final List<IconData> iconOptions = [
-      Icons.shopping_bag,
-      Icons.shopping_cart,
-      Icons.restaurant,
-      Icons.local_cafe,
-      Icons.directions_car,
-      Icons.directions_bus,
-      Icons.local_taxi,
-      Icons.local_hospital,
-      Icons.school,
-      Icons.book,
-      Icons.movie,
-      Icons.sports_esports,
-      Icons.fitness_center,
-      Icons.sports,
-      Icons.home,
-      Icons.house,
-      Icons.smartphone,
-      Icons.computer,
-      Icons.tv,
-      Icons.card_giftcard,
-      Icons.airplanemode_active,
-      Icons.hotel,
-      Icons.beach_access,
-      Icons.category,
-    ];
-
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      children: iconOptions.map((icon) {
-        final isSelected = currentIcon == icon;
-        return GestureDetector(
-          onTap: () => onIconSelected(icon),
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: isSelected ? currentColor.withOpacity(0.2) : Colors.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected ? currentColor : Colors.transparent,
-                width: 2,
-              ),
-            ),
-            child: Icon(
-              icon,
-              color: isSelected ? currentColor : Colors.grey[600],
-              size: 24,
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
 }
 
 class Subcategory {

@@ -1,5 +1,5 @@
 
-abstract class CategoryManagementEntity {
+abstract class CategoryEntity {
   final int? categoryId;
   final String? name;
   final String? color;
@@ -8,7 +8,7 @@ abstract class CategoryManagementEntity {
   final double storedSpentAmount;
 
 
-  CategoryManagementEntity({
+  CategoryEntity({
     this.categoryId,
     required this.allocatedAmount,
     this.storedSpentAmount=0,

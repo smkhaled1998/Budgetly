@@ -1,6 +1,6 @@
 
 import 'package:sqflite/sqflite.dart';
-import '../../domain/entities/category_management_entity.dart';
+import '../../domain/entities/category_entity.dart';
 import 'database_helper.dart';
 import '../../error/exceptions.dart';
 import '../../../features/transaction/domain/entities/transaction_entity.dart';
@@ -74,7 +74,7 @@ class CategoryManagementDataSource {
   }
 
   Future<int> initializeCategoriesData({
-    required List<CategoryManagementEntity> categories,
+    required List<CategoryEntity> categories,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {

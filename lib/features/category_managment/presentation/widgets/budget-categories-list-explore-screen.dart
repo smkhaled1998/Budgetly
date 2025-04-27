@@ -5,22 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constances.dart';
-import '../../../../core/domain/entities/category_management_entity.dart';
+import '../../../../core/domain/entities/category_entity.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../transaction/presentation/screens/new_expense_entry_screen.dart';
 
-import '../cubit/category_management_cubit.dart';
-import '../cubit/category_management_states.dart';
+import '../cubit/category_cubit.dart';
+import '../cubit/category_states.dart';
 
 class MainCategoriesListWidget extends StatelessWidget {
   const MainCategoriesListWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryManagementCubit, CategoryManagementStates>(
+    return BlocBuilder<CategoryCubit, CategoryStates>(
       builder: (context, state) {
         if (state is GetCategoryDataSuccessState || state is ChangeAppearanceState) {
-          final categoryCubit = CategoryManagementCubit.get(context);
+          final categoryCubit = CategoryCubit.get(context);
           final categories = categoryCubit.fetchedCategories;
 
           return ListView.separated(
@@ -64,7 +64,7 @@ class MainCategoriesListWidget extends StatelessWidget {
     );
   }
 
-  Widget _categoryListItem(CategoryManagementEntity categoryEntity, CategoryManagementCubit categoryCubit, context) {
+  Widget _categoryListItem(CategoryEntity categoryEntity, CategoryCubit categoryCubit, context) {
     final double progressValue = categoryEntity.allocatedAmount == 0
         ? 0
         : categoryEntity.storedSpentAmount / categoryEntity.allocatedAmount!;
@@ -130,7 +130,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColor.textColor,
+                          color: AppColor.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -201,7 +201,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                             "\$${categoryEntity.storedSpentAmount.toStringAsFixed(0)}/\$${categoryEntity.allocatedAmount!.toStringAsFixed(0)}",
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppColor.textColor.withOpacity(0.8),
+                              color: AppColor.textPrimary.withOpacity(0.8),
                             ),
                           ),
                           // Clickable indicator icon

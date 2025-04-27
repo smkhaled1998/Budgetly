@@ -9,6 +9,4 @@ abstract class UserInfoRepository{
   Future<Either<Failure,Unit>> updateUserInfo(UserInfoEntity item);
   Future<Either<Failure,Unit>> deleteUserInfo(int userId);
   Future<Either<Failure,Unit>> insertUserInfo(UserInfoEntity item);
-
-
 }

@@ -4,7 +4,7 @@ import '../../../../core/domain/repositories/category_management_repository.dart
 
 
 class InsertSubCategoryDataUseCase {
-  final CategoryManagementRepository categoryManagementRepository;
+  final CategoryRepository categoryManagementRepository;
 
   InsertSubCategoryDataUseCase({required this.categoryManagementRepository});
 

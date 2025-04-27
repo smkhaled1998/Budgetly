@@ -24,31 +24,61 @@ class UserInfoDataSource {
     }
   }
 
-  Future<int> insertUserData({
-  required String currency,
-  required String monthlySalary,
-  required String userImg,
-  required String userName,
-}) async {
-    Database? myDb = await DatabaseHelper.db;
-
+//   Future<int> insertUserData({
+//   required String currency,
+//   required String monthlySalary,
+//   required String userImg,
+//   required String userName,
+// }) async {
+//     Database? myDb = await DatabaseHelper.db;
+//
+//     try {
+//       int response = await myDb!.insert("userInfo",{
+//         'currency':currency,
+//         'monthlySalary':monthlySalary,
+//         'userImg':userImg,
+//         'userName':userName,
+//       });
+//       print("***************************User Data inserted*************************");
+//       return response;
+//     } on DatabaseException catch (e) {
+//       if (e.isSyntaxError()) {
+//         throw SQLSyntaxException();
+//       } else {
+//         throw DataInsertionException();
+//       }
+//     } catch (e) {
+//       throw DataRetrievalException();
+//     }
+//   }
+   Future<void> insertUserData({
+    required String userName,
+    required String userImg,
+    required String monthlySalary,
+    required String currency,
+  }) async {
+    final db = await DatabaseHelper.db;
     try {
-      int response = await myDb!.insert("userInfo",{
-        'currency':currency,
-        'monthlySalary':monthlySalary,
-        'userImg':userImg,
-        'userName':userName,
-      });
-      print("***************************User Data inserted*************************");
-      return response;
-    } on DatabaseException catch (e) {
-      if (e.isSyntaxError()) {
-        throw SQLSyntaxException();
-      } else {
-        throw DataInsertionException();
-      }
+      // حذف أي بيانات موجودة مسبقًا
+      await db!.delete('userInfo');
+      print("Previous user data deleted successfully");
+
+      // إدراج بيانات المستخدم الجديد
+      await db.insert(
+        'userInfo',
+        {
+          'userName': userName,
+          'userImg': userImg,
+          'monthlySalary': monthlySalary,
+          'currency': currency,
+          'storedSpentAmount': 0.0, // القيمة الافتراضية
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace, // استبدال البيانات إذا كان هناك تعارض
+      );
+      print("New user info inserted successfully");
     } catch (e) {
-      throw DataRetrievalException();
+      print("Error inserting user info: $e");
+      throw DataInsertionException("Failed to insert user info: ${e.toString()}");
     }
   }
 

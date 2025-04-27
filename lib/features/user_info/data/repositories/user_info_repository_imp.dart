@@ -42,10 +42,10 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
   Future<Either<Failure, Unit>> insertUserInfo(UserInfoEntity user) async {
     try {
       await localDataSource.insertUserData(
-        currency: user.currency,
+          currency: user.currency,
           monthlySalary: user.monthlySalary,
          userImg: user.userImg??"",
-        userName:user.userName
+        userName:user.userName??""
       );
       return const Right(unit);
     } on DataInsertionException catch (e) {

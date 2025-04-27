@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/data/database/database_helper.dart';
 import 'core/util/bloc_obserever.dart';
 import 'features/category_managment/presentation/screens/explore_screen.dart';
+import 'features/user_info/presentation/screens/setup_profile_screen.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -25,6 +26,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
           useMaterial3: true,
         ),
-        home:  ExploreScreen());
+        home:  SetupProfileScreen());
   }
 }

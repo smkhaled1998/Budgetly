@@ -1,4 +1,4 @@
-// lib/presentation/widgets/pickers/color_picker.dart
+// lib/core/widgets/pickers/color_picker_widget.dart
 import 'package:flutter/material.dart';
 
 class ColorPickerWidget extends StatelessWidget {

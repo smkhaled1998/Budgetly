@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  // Primary Color - أزرق داكن أنيق للخلفيات الرئيسية
-  static const Color primaryColor = Color(0xFF164863); // Royal Blue
+  // Colors for Expense Tracking App based on primary color: 0xFF3B566D
 
-  // Secondary Color - أزرق كحلي أغمق للعمق البصري
-  static const Color secondaryColor = Color(0xFF172B4D); // Navy Blue
+  // Main Colors
+  static const Color primaryColor = Color(0xFF3B566D);     // اللون الأساسي - أزرق مائل للرمادي
+  static const Color secondaryColor = Color(0xFF2A3F50);   // نسخة أغمق من اللون الأساسي
+  static const Color accentColor = Color(0xFF4F959D);      // لون فيروزي متباين للتأكيد
+  static const Color expenseColor = Color(0xFFFF6B6B);     // لون أحمر للمصروفات
 
-  // Accent Color - لعناصر التفاعل مثل الأزرار
-  static const Color accentColor = Color(0xFF00FFC8); // CyanAccent مميز (تماثل في الغالبية)
+  static const Color categoryOthers = Color(0xFF90A4AE);   // رمادي مزرق للمتفرقات
 
-  // Backgrounds
-  static const Color backgroundCircleWhite = Color(0x80FFFFFF); // أبيض شفاف للزخارف
-  static const Color backgroundGlass = Color(0x1AFFFFFF); // خلفية زجاجية (شفافة)
-  static const Color backgroundCardBorder = Color(0x33FFFFFF); // إطار شفاف للبطاقات
-  static const Color backgroundCardShadow = Color(0x1A000000); // ظل داكن خفيف
+  // Background Colors
+  static const Color backgroundColor = Color(0xFFF5F7FA);  // خلفية فاتحة
+  static const Color cardBackground = Colors.white;        // خلفية بيضاء للبطاقات
+  static const Color backgroundGlass = Color(0x1A3B566D);  // لون زجاجي نصف شفاف من اللون الأساسي
+  static const Color backgroundCardShadow = Color(0x1A000000); // ظل البطاقات
 
   // Text Colors
-  static const Color textColor = Colors.black;
-  static const Color textSecondary = Colors.white70;
-  static const Color textLight = Color(0xB3FFFFFF); // تقريبًا white.withOpacity(0.7)
 
-  // Progress Indicator Colors
-  static const Color progressBackground = Color(0x33FFFFFF); // شفاف
-  static const Color progressSafe = Colors.greenAccent;
-  static const Color progressWarning = Colors.redAccent;
+  static const Color textPrimary = Color(0xFF263238);      // نص أساسي داكن
+  static const Color textSecondary = Color(0xFF78909C);    // نص ثانوي رمادي
+  static const Color textWhite = Colors.white;             // نص أبيض للخلفيات الداكنة
 
-  // Budget Info Icons
-  static const Color iconSpent = Colors.redAccent;
-  static const Color iconTotal = Colors.blueAccent;
+  // Bottom Bar Colors
+  static const Color bottomWhiteBackGround = Colors.white;   // خلفية بيضاء للشريط السفلي
+  static const Color bottomBarActive = Color(0xFF3B566D);  // لون أزرق للعناصر النشطة (اللون الأساسي)
+  static const Color bottomBarInactive = Color(0xFFB0BEC5); // لون رمادي للعناصر غير النشطة
 
-  // Gradient Progress Bar
-  static const List<Color> progressGradientSafe = [Colors.greenAccent, Colors.cyanAccent];
-  static const List<Color> progressGradientWarning = [Colors.redAccent, Colors.orangeAccent];
-
-  // Shadow color for progress bar
-  static const Color progressShadowSafe = Color(0x8032CD32); // تقريباً greenAccent شفاف
-  static const Color progressShadowWarning = Color(0x80FF5252); // تقريباً redAccent شفاف
+  // Others
+  static const Color dividerColor = Color(0xFFECEFF1);     // لون فواصل فاتح
+  static const Color incomeColor = Color(0xFF66BB6A);      // لون أخضر للدخل
+  static const Color lightGray = Color(0x333B566D);        // رمادي فاتح مستوحى من اللون الأساسي
 }

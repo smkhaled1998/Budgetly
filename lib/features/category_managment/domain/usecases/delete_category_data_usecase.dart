@@ -7,7 +7,7 @@ import '../../../../core/domain/repositories/category_management_repository.dart
 
 class DeleteCategoryDataUseCase{
 
-  final CategoryManagementRepository categoryManagementRepository;
+  final CategoryRepository categoryManagementRepository;
   final int categoryId;
 
   DeleteCategoryDataUseCase( {required this.categoryId,required this.categoryManagementRepository});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/header_widget.dart';
-import '../cubit/category_management_cubit.dart';
+import '../cubit/category_cubit.dart';
 import '../widgets/tab_bar_view_widget.dart';
 
 class ExploreScreen extends StatelessWidget {
@@ -9,8 +9,8 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CategoryManagementCubit>(
-      create: (context) => CategoryManagementCubit()..fetchCategories(),
+    return BlocProvider<CategoryCubit>(
+      create: (context) => CategoryCubit()..fetchCategories(),
       child: Scaffold(
         body: DefaultTabController(
           length: 2,

@@ -1,7 +1,6 @@
-import '../../domain/entities/category_management_entity.dart';
-import '../../domain/entities/transaction_entity.dart';
+import '../../domain/entities/category_entity.dart';
 
-class CategoryManagementModel extends CategoryManagementEntity {
+class CategoryManagementModel extends CategoryEntity {
   CategoryManagementModel({
     super.categoryId,
     required super.allocatedAmount,

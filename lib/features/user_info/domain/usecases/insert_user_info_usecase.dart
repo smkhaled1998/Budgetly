@@ -10,7 +10,7 @@ class InsertUserInfoUseCase {
 
   InsertUserInfoUseCase({required this.userInfoRepository});
 
-  Future<Either<Failure, Unit>> call(user) async {
+  Future<Either<Failure, Unit>> call(UserInfoEntity user) async {
     return await userInfoRepository.insertUserInfo( user);
   }
 }
