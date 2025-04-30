@@ -40,7 +40,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                       builder: (context) => BlocProvider.value(
                           value: categoryCubit,
                           child: NewExpenseEntryScreen(
-                         categoryManagementEntity: categoryEntity,
+                         categoryEntity: categoryEntity,
                             subCategories:[
                               Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor),
                               Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor)

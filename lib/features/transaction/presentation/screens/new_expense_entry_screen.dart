@@ -13,20 +13,20 @@ import '../cubit/transaction_cubit.dart';
 import '../cubit/transaction_states.dart';
 
 class NewExpenseEntryScreen extends StatelessWidget {
-  final CategoryEntity categoryManagementEntity;
+  final CategoryEntity categoryEntity;
   final List<Subcategory> subCategories;
 
   const NewExpenseEntryScreen({
     super.key,
     required this.subCategories,
-    required this.categoryManagementEntity,
+    required this.categoryEntity,
   });
 
   @override
   Widget build(BuildContext context) {
-    final percentSpent = categoryManagementEntity.storedSpentAmount / categoryManagementEntity.allocatedAmount!;
-    final Color categoryColor = parseColorFromString(categoryManagementEntity.color ?? '#1E88E5');
-    final double remainingAmount = categoryManagementEntity.allocatedAmount! - categoryManagementEntity.storedSpentAmount;
+    final percentSpent = categoryEntity.storedSpentAmount / categoryEntity.allocatedAmount!;
+    final Color categoryColor = parseColorFromString(categoryEntity.color ?? '#1E88E5');
+    final double remainingAmount = categoryEntity.allocatedAmount! - categoryEntity.storedSpentAmount;
 
     return BlocProvider(
       create: (context) => TransactionCubit(),
@@ -41,7 +41,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExploreScreen()));
                }, icon: Icon(Icons.arrow_back_ios_new_outlined,color: Colors.white,)),
               title: Text(
-                categoryManagementEntity.name!,
+                categoryEntity.name!,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -110,13 +110,16 @@ class NewExpenseEntryScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: categoryColor.withOpacity(0.12),
+                      color: categoryColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Image.asset(
-                      categoryManagementEntity.icon!,
-                      width: 40,
-                      height: 40,
+                    child: Icon(
+                      IconData(
+                        int.parse(categoryEntity.icon!),
+                        fontFamily: 'MaterialIcons',
+                      ),
+                      color: Colors.white,
+                      size: 24,
                     ),
                   ),
                 ],
@@ -130,7 +133,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          categoryManagementEntity.name!,
+                          categoryEntity.name!,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
