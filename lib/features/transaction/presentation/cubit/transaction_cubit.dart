@@ -14,8 +14,8 @@ class TransactionCubit extends Cubit<TransactionStates> {
 
   static TransactionCubit get(context) => BlocProvider.of(context);
 
-  bool showPieChart = false;
   bool isEditMode = false;
+  bool showPieChart = false;
 
   void togglePieChart() {
     showPieChart = !showPieChart;

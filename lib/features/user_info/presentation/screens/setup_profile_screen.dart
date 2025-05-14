@@ -11,8 +11,8 @@ import '../../../../core/constances.dart';
 import '../../../../core/themes/app_color.dart';
 
 
-import '../../../category_managment/presentation/cubit/category_cubit.dart';
-import '../../../category_managment/presentation/screens/category_slicing_screen.dart';
+import '../../../category/presentation/cubit/category_cubit.dart';
+import '../../../category/presentation/screens/category_slicing_screen.dart';
 import '../../../user_info/presentation/cubit/setting_up_cubit.dart';
 import '../widgets/currency_modal_bottom_sheet.dart';
 

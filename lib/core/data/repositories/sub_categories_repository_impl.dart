@@ -5,18 +5,18 @@ import '../../domain/entities/sub_category-entity.dart';
 import '../database/sub_category_datasource.dart';
 import '../../domain/repositories/sub_category_repository.dart';
 import '../../error/failures.dart';
-import '../models/sub_category_model.dart';
+import '../models/subcategory_model.dart';
 
-class SubCategoryRepositoryImpl implements SubCategoryRepository {
-  final SubCategoryDataSource localDataSource;
+class SubcategoryRepositoryImpl implements SubcategoryRepository {
+  final SubcategoryDataSource localDataSource;
 
-  SubCategoryRepositoryImpl({required this.localDataSource});
+  SubcategoryRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, List<SubCategoryModel>>> getSubCategoryData() async {
+  Future<Either<Failure, List<SubcategoryModel>>> getSubcategoryData() async {
     try {
-      final response = await localDataSource.getSubCategoriesData();
-      final subCategories = response.map((data) => SubCategoryModel.fromJson(data)).toList();
+      final response = await localDataSource.getSubcategoriesData();
+      final subCategories = response.map((data) => SubcategoryModel.fromJson(data)).toList();
       return Right(subCategories);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
@@ -26,13 +26,13 @@ class SubCategoryRepositoryImpl implements SubCategoryRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> insertNewSubCategory(SubCategoryEntity item) async {
+  Future<Either<Failure, Unit>> insertNewSubcategory(SubcategoryEntity item) async {
     try {
-      await localDataSource.insertNewSubCategory(
-        subCategoryName: item.subCategoryName!,
-        subCategoryColor: item.subCategoryColor!,
-        subCategoryIcon: item.subCategoryIcon!,
-        categoryId: item.categoryId!,
+      await localDataSource.insertNewSubcategory(
+        subcategoryName: item.subcategoryName!,
+        subcategoryColor: item.subcategoryColor!,
+        subcategoryIcon: item.subcategoryIcon!,
+        categoryId: item.parentCategoryId!,
       );
       return const Right(unit);
     } on DatabaseException catch (e) {
@@ -43,24 +43,24 @@ class SubCategoryRepositoryImpl implements SubCategoryRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> updateSubCategoryData({
+  Future<Either<Failure, Unit>> updateSubcategoryData({
     required int categoryId,
-    required SubCategoryEntity subCategory,
+    required SubcategoryEntity subCategory,
   }) async {
     try {
       final Map<String, dynamic> updatedFields = {};
 
-      if (subCategory.subCategoryName != null) {
-        updatedFields['subCategoryName'] = subCategory.subCategoryName;
+      if (subCategory.subcategoryName != null) {
+        updatedFields['subcategoryName'] = subCategory.subcategoryName;
       }
-      if (subCategory.subCategoryColor != null) {
-        updatedFields['subCategoryColor'] = subCategory.subCategoryColor;
+      if (subCategory.subcategoryColor != null) {
+        updatedFields['subcategoryColor'] = subCategory.subcategoryColor;
       }
-      if (subCategory.subCategoryIcon != null) {
-        updatedFields['subCategoryIcon'] = subCategory.subCategoryIcon;
+      if (subCategory.subcategoryIcon != null) {
+        updatedFields['subcategoryIcon'] = subCategory.subcategoryIcon;
       }
-      if (subCategory.categoryId != null) {
-        updatedFields['categoryId'] = subCategory.categoryId;
+      if (subCategory.parentCategoryId != null) {
+        updatedFields['categoryId'] = subCategory.parentCategoryId;
       }
 
       // التحقق من وجود بيانات للتحديث
@@ -69,8 +69,8 @@ class SubCategoryRepositoryImpl implements SubCategoryRepository {
       }
 
       // استدعاء دالة التحديث في الداتاسورس مع الحقول المحددة فقط
-      await localDataSource.updateSubCategoryData(
-        subCategoryId: subCategory.subCategoryId!,
+      await localDataSource.updateSubcategoryData(
+        subcategoryId: subCategory.subCategoryId!,
         updatedFields: updatedFields,
       );
       return const Right(unit);
@@ -82,9 +82,9 @@ class SubCategoryRepositoryImpl implements SubCategoryRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> deleteSubCategoryData(int subCategoryId) async {
+  Future<Either<Failure, Unit>> deleteSubcategoryData(int subCategoryId) async {
     try {
-      await localDataSource.deleteSubCategoryData(subCategoryId);
+      await localDataSource.deleteSubcategoryData(subCategoryId);
       return const Right(unit);
     } on DatabaseException catch (e) {
       return Left(DataDeletionFailure(errorMessage: e.toString()));

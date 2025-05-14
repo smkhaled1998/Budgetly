@@ -54,13 +54,14 @@ class DatabaseHelper {
       )''');
 
       // إنشاء جدول الفئات الفرعية مع ربطه بجدول الفئات الرئيسية
-      await db.execute('''CREATE TABLE subCategory (
-        subCategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-        subCategoryName TEXT NOT NULL,
-        subCategoryColor TEXT,
-        subCategoryIcon TEXT,
-        categoryId INTEGER NOT NULL,
-        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE
+      await db.execute('''CREATE TABLE subcategory (
+        subcategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
+        subcategoryName TEXT NOT NULL,
+        subcategoryColor TEXT,
+        subcategoryIcon TEXT,
+        subcategorySpentAmount TEXT
+        parentCategoryId INTEGER NOT NULL,
+        FOREIGN KEY (parentCategoryId) REFERENCES category (categoryId) ON DELETE CASCADE
       )''');
 
       // إنشاء جدول معلومات المستخدم

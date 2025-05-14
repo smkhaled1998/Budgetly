@@ -1,10 +1,8 @@
-import 'package:budget_buddy/core/main_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/data/database/database_helper.dart';
 import 'core/util/bloc_obserever.dart';
-import 'features/category_managment/presentation/screens/explore_screen.dart';
 import 'features/user_info/presentation/screens/setup_profile_screen.dart';
 
 void main() async {

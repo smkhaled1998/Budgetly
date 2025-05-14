@@ -1,18 +1,20 @@
 
-abstract class SubCategoryEntity {
+abstract class SubcategoryEntity {
   final int? subCategoryId;
-  final int? categoryId;
-  final String? subCategoryName;
-  final String? subCategoryColor;
-  final String? subCategoryIcon;
+  final int? parentCategoryId;
+  final String? subcategoryName;
+  final String? subcategoryColor;
+  final String? subcategoryIcon;
+  final double? subcategorySpentAmount;
 
 
 
-  SubCategoryEntity({
-    this.categoryId,
+  SubcategoryEntity({
+    this.parentCategoryId,
     this.subCategoryId,
-    this.subCategoryIcon,
-    this.subCategoryColor,
-    required this.subCategoryName,
+    this.subcategorySpentAmount,
+    this.subcategoryIcon,
+    this.subcategoryColor,
+    required this.subcategoryName,
   });
 }

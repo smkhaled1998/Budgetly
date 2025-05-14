@@ -4,10 +4,14 @@ import 'package:budget_buddy/core/themes/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../features/category/presentation/cubit/category_cubit.dart';
+import '../../../features/category/presentation/cubit/category_states.dart';
+import '../../../features/subcategory/presentation/cubit/subcategory_cubit.dart';
+import '../../../features/subcategory/presentation/cubit/subcategory_states.dart';
+import '../../data/models/subcategory_model.dart';
+import '../../domain/entities/sub_category-entity.dart';
 import 'color_picker_widget.dart';
 import 'icon_picker_widget.dart';
-import 'package:budget_buddy/features/category_managment/presentation/cubit/category_cubit.dart';
-import 'package:budget_buddy/features/category_managment/presentation/cubit/category_states.dart';
 
 class PickerDialogHelpers {
 
@@ -43,7 +47,7 @@ class PickerDialogHelpers {
                       pageController: pageController,
                       currentPage: currentPage,
                       isCategory: true,
-                      cubit: categoryCubit,
+                      categoryCubit: categoryCubit,
 
                       onIconSelected: (icon) {
                         String updatedCategoryIcon = icon.codePoint.toString();
@@ -86,6 +90,75 @@ class PickerDialogHelpers {
   }
 
 
+
+
+/// Show dialog to edit color and icon for subcategories
+static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
+  required BuildContext context,
+  required String title,
+  required CategoryEntity parentCategory,
+  required Function() pickerFunction,
+  double? initialAmount,
+}) async {
+  final TextEditingController nameController = TextEditingController();
+  final PageController pageController = PageController();
+
+  SubcategoryCubit subcategoryCubit = SubcategoryCubit.get(context);
+
+
+  int currentPage = 0;
+
+  final result = await showDialog<Map<String, dynamic>>(
+    context: context,
+    builder: (BuildContext context) {
+      return BlocBuilder<SubcategoryCubit, SubcategoryStates>(
+        builder: (context, state) {
+          return _buildDialogContent(
+
+ currentColor: subcategoryCubit.subcategoryColor,
+            context: context,
+            title: title,
+            nameController: nameController,
+            pageController: pageController,
+            currentPage: currentPage,
+            isCategory: false,
+            subcategoryCubit: subcategoryCubit,
+            onIconSelected: (icon) {
+              // subcategoryCubit.subcategoryIcon = icon.codePoint.toString();
+              subcategoryCubit.emit(ChangeSubcategoryAppearanceState(items: subcategoryCubit.fetchedSubcategories));
+            },
+            onColorSelected: (color) {
+              subcategoryCubit.updateSubcategoryColor(color);
+            },
+            onSavePressed: () {
+              if (nameController.text.trim().isNotEmpty) {
+                IconData selectedIcon = IconData(
+                    int.tryParse(subcategoryCubit.subcategoryIcon ?? '0xe000') ?? 0xe000,
+                    fontFamily: 'MaterialIcons'
+                );
+
+                // إنشاء كائن فئة فرعية جديدة
+                SubcategoryEntity newEntity = SubcategoryModel(
+                  subcategoryName: nameController.text,
+                  subcategoryColor:subcategoryCubit.subcategoryColor.value.toRadixString(16),
+                  subcategoryIcon:  subcategoryCubit.subcategoryIcon,
+                  parentCategoryId: parentCategory.categoryId,
+                );
+
+                // استدعاء الدالة المناسبة
+                pickerFunction();
+
+                Navigator.pop(context);
+              }
+            },
+          );
+        },
+      );
+    },
+  );
+
+  return result;
+}
   static Widget _buildDialogContent({
     required BuildContext context,
     required String title,
@@ -96,7 +169,8 @@ class PickerDialogHelpers {
     required int currentPage,
     required Color currentColor,
     required bool isCategory,
-    CategoryCubit? cubit,
+    CategoryCubit? categoryCubit,
+    SubcategoryCubit? subcategoryCubit,
     required Function(IconData) onIconSelected,
     required Function(Color) onColorSelected,
     required VoidCallback onSavePressed,
@@ -131,7 +205,7 @@ class PickerDialogHelpers {
                   currentPage = page;
                   // إعادة بناء الواجهة
                   if (isCategory) {
-                    cubit!.emit(ChangeAppearanceState(items: cubit.fetchedCategories));
+                    categoryCubit!.emit(ChangeCategoryAppearanceState(items: categoryCubit.fetchedCategories));
                   }
                 },
                 children: [
@@ -147,8 +221,8 @@ class PickerDialogHelpers {
                           currentIcon: IconData(
                               int.tryParse(
                                   isCategory ?
-                                  cubit!.categoryIcon ?? '0xe000' :
-                                  cubit!.categoryIcon ?? '0xe000') ?? 0xe000,
+                                  categoryCubit!.categoryIcon ?? '0xe000' :
+                                  categoryCubit!.categoryIcon ?? '0xe000') ?? 0xe000,
                               fontFamily: 'MaterialIcons'
                           ),
                           currentColor: currentColor,
@@ -215,89 +289,5 @@ class PickerDialogHelpers {
       ],
     );
   }
-
-// /// Show dialog to edit color and icon for subcategories
-// static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
-//   required BuildContext context,
-//   required String title,
-//   required String initialName,
-//   required Color initialColor,
-//   required IconData initialIcon,
-//   required Color accentColor,
-//   required CategoryEntity parentCategory,
-//   required Function(CategoryEntity) pickerFunction,
-//   double? initialAmount,
-// }) async {
-//   final TextEditingController nameController = TextEditingController(text: initialName);
-//   final PageController pageController = PageController();
-//
-//   // استخدام SubCategoryCubit الموجود
-//   final subcategoryCubit = SubcategoryCubit.get(context);
-//
-//   // تهيئة القيم الأولية
-//   // subcategoryCubit.subcategoryColor = initialColor;
-//   // subcategoryCubit.subcategoryIcon = initialIcon.codePoint.toString();
-//   int currentPage = 0;
-//
-//   final result = await showDialog<Map<String, dynamic>>(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return BlocBuilder<SubcategoryCubit, SubcategoryStates>(
-//         builder: (context, state) {
-//           return _buildDialogContent(
-//             context: context,
-//             title: title,
-//             nameController: nameController,
-//             pageController: pageController,
-//             currentPage: currentPage,
-//             accentColor: accentColor,
-//             isCategory: false,
-//             subcategoryCubit: subcategoryCubit,
-//             onIconSelected: (icon) {
-//               subcategoryCubit.subcategoryIcon = icon.codePoint.toString();
-//               subcategoryCubit.emit(ChangeSubcategoryAppearanceState(items: subcategoryCubit.fetchedSubcategories));
-//             },
-//             onColorSelected: (color) {
-//               subcategoryCubit.updateSubcategoryColor(color);
-//             },
-//             onSavePressed: () {
-//               if (nameController.text.trim().isNotEmpty) {
-//                 IconData selectedIcon = IconData(
-//                     int.tryParse(subcategoryCubit.subcategoryIcon ?? '0xe000') ?? 0xe000,
-//                     fontFamily: 'MaterialIcons'
-//                 );
-//
-//                 // إنشاء كائن فئة فرعية جديدة
-//                 CategoryEntity newEntity = CategoryManagementModel(
-//                   categoryId: null,
-//                   name: nameController.text,
-//                   allocatedAmount: initialAmount ?? 0.0,
-//                   storedSpentAmount: 0.0,
-//                   color: subcategoryCubit.subcategoryColor.value.toRadixString(16),
-//                   icon: subcategoryCubit.subcategoryIcon,
-//                   parentCategoryId: parentCategory.categoryId,
-//                 );
-//
-//                 // استدعاء الدالة المناسبة
-//                 pickerFunction(newEntity);
-//
-//                 Navigator.pop(context, {
-//                   'name': nameController.text,
-//                   'color': subcategoryCubit.subcategoryColor,
-//                   'icon': selectedIcon,
-//                   'entity': newEntity,
-//                 });
-//               }
-//             },
-//           );
-//         },
-//       );
-//     },
-//   );
-//
-//   return result;
-// }
-
-// دالة مساعدة لبناء محتوى الحوار (يستخدم من كلا الدالتين)
 
 }

@@ -1,8 +1,4 @@
-// lib/core/widgets/pickers/icon_picker_widget.dart
-import 'package:budget_buddy/features/category_managment/presentation/cubit/category_cubit.dart';
-import 'package:budget_buddy/features/category_managment/presentation/cubit/category_states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class IconPickerWidget extends StatelessWidget {
   final IconData currentIcon;
