@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/category/presentation/screens/explore_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +25,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
           useMaterial3: true,
         ),
-        home:  SetupProfileScreen());
+        home:  ExploreScreen());
   }
 }

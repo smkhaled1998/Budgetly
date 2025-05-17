@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entities/sub_category-entity.dart';
-import '../database/sub_category_datasource.dart';
+import '../database/subcategory_datasource.dart';
 import '../../domain/repositories/sub_category_repository.dart';
 import '../../error/failures.dart';
 import '../models/subcategory_model.dart';
@@ -32,7 +32,7 @@ class SubcategoryRepositoryImpl implements SubcategoryRepository {
         subcategoryName: item.subcategoryName!,
         subcategoryColor: item.subcategoryColor!,
         subcategoryIcon: item.subcategoryIcon!,
-        categoryId: item.parentCategoryId!,
+        parentCategoryId: item.parentCategoryId!,
       );
       return const Right(unit);
     } on DatabaseException catch (e) {

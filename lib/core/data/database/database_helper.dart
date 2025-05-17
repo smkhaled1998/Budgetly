@@ -21,7 +21,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 1, // زيادة الإصدار
+        version: 2, // زيادة الإصدار من 1 إلى 2
         onCreate: _onCreate,
         onUpgrade: _onUpgrade, // إضافة دالة الترقية
         onOpen: (db) async {
@@ -31,7 +31,9 @@ class DatabaseHelper {
       return myDb;
     } on DatabaseException catch (e) {
       if (e.isOpenFailedError()) {
-        throw DatabaseInitializationException("Failed to initialize or open database.");
+        print("Database initialization failed: ${e.toString()}");
+        await deleteDatabase(path);
+        return await _initializeDb(); // محاولة إعادة إنشاء قاعدة البيانات
       } else {
         throw QueryExecutionException("Query execution failed: ${e.toString()}");
       }
@@ -59,7 +61,7 @@ class DatabaseHelper {
         subcategoryName TEXT NOT NULL,
         subcategoryColor TEXT,
         subcategoryIcon TEXT,
-        subcategorySpentAmount TEXT
+        subcategorySpentAmount REAL DEFAULT 0,
         parentCategoryId INTEGER NOT NULL,
         FOREIGN KEY (parentCategoryId) REFERENCES category (categoryId) ON DELETE CASCADE
       )''');
@@ -92,15 +94,84 @@ class DatabaseHelper {
 
   // تحديث الجداول عند زيادة إصدار قاعدة البيانات
   static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      try {
-        // إضافة عمود userImg إلى الجدول userInfo
-        await db.execute('ALTER TABLE userInfo ADD COLUMN userImg TEXT NOT NULL DEFAULT ""');
-        print("Table userInfo upgraded successfully");
-      } catch (e) {
-        print("Error upgrading table userInfo: $e");
-        throw SQLSyntaxException("Failed to upgrade table userInfo: ${e.toString()}");
+    try {
+      print("Upgrading database from version $oldVersion to $newVersion");
+
+      if (oldVersion < 2) {
+        // التحقق من أعمدة جدول userInfo
+        try {
+          var userInfoColumns = await db.rawQuery('PRAGMA table_info(userInfo)');
+          bool hasUserImg = userInfoColumns.any((column) => column['name'] == 'userImg');
+
+          if (!hasUserImg) {
+            await db.execute('ALTER TABLE userInfo ADD COLUMN userImg TEXT NOT NULL DEFAULT ""');
+            print("Added userImg column to userInfo table");
+          } else {
+            print("userImg column already exists in userInfo table");
+          }
+        } catch (e) {
+          print("Error checking userInfo table: $e");
+        }
+
+        // التحقق من أعمدة جدول subcategory
+        try {
+          var subcategoryColumns = await db.rawQuery('PRAGMA table_info(subcategory)');
+
+          // التحقق من وجود عمود subcategorySpentAmount
+          bool hasSubcategorySpentAmount = subcategoryColumns.any((column) => column['name'] == 'subcategorySpentAmount');
+          if (!hasSubcategorySpentAmount) {
+            await db.execute('ALTER TABLE subcategory ADD COLUMN subcategorySpentAmount REAL DEFAULT 0');
+            print("Added subcategorySpentAmount column to subcategory table");
+          } else {
+            print("subcategorySpentAmount column already exists in subcategory table");
+          }
+
+          // التحقق من وجود عمود parentCategoryId
+          bool hasParentCategoryId = subcategoryColumns.any((column) => column['name'] == 'parentCategoryId');
+          if (!hasParentCategoryId) {
+            await db.execute('ALTER TABLE subcategory ADD COLUMN parentCategoryId INTEGER NOT NULL DEFAULT 0');
+            print("Added parentCategoryId column to subcategory table");
+          } else {
+            print("parentCategoryId column already exists in subcategory table");
+          }
+        } catch (e) {
+          // إذا كان الخطأ بسبب عدم وجود جدول subcategory، فقم بإنشائه
+          print("Error checking subcategory table: $e");
+
+          // التحقق مما إذا كان جدول subcategory موجودًا
+          var tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='subcategory'");
+
+          if (tables.isEmpty) {
+            await db.execute('''CREATE TABLE subcategory (
+              subcategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
+              subcategoryName TEXT NOT NULL,
+              subcategoryColor TEXT,
+              subcategoryIcon TEXT,
+              subcategorySpentAmount REAL DEFAULT 0,
+              parentCategoryId INTEGER NOT NULL,
+              FOREIGN KEY (parentCategoryId) REFERENCES category (categoryId) ON DELETE CASCADE
+            )''');
+            print("Created subcategory table from scratch");
+          }
+        }
       }
+
+      print("Database upgraded successfully");
+    } catch (e) {
+      print("Error upgrading database: $e");
+      throw SQLSyntaxException("Failed to upgrade database: ${e.toString()}");
+    }
+  }
+
+  // إعادة إنشاء قاعدة البيانات (مسح وإعادة إنشاء)
+  static Future<void> recreateDatabase() async {
+    try {
+      await removeDatabase();
+      await _initializeDb();
+      print("Database recreated successfully");
+    } catch (e) {
+      print("Error recreating database: $e");
+      throw DatabaseInitializationException("Failed to recreate database: ${e.toString()}");
     }
   }
 

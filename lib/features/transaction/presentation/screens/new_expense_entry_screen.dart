@@ -5,21 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/Widgets/pickers/picker_dialog_helpers.dart';
 import '../../../../core/constances.dart';
+import '../../../../core/domain/entities/sub_category-entity.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../category/presentation/screens/explore_screen.dart';
 import '../../../category/presentation/widgets/selected_category_header.dart';
+import '../../../subcategory/presentation/cubit/subcategory_cubit.dart';
+import '../../../subcategory/presentation/cubit/subcategory_states.dart';
 import '../../../subcategory/presentation/widgets/subcategories_widget.dart';
 import '../cubit/transaction_cubit.dart';
 import '../cubit/transaction_states.dart';
 
-
 class NewExpenseEntryScreen extends StatelessWidget {
   final CategoryEntity categoryEntity;
-  final List<Subcategory> subCategories;
 
   const NewExpenseEntryScreen({
     super.key,
-    required this.subCategories,
     required this.categoryEntity,
   });
 
@@ -72,7 +72,6 @@ class NewExpenseEntryScreen extends StatelessWidget {
                 // Subcategories Widget
                 Expanded(
                   child: SubcategoriesWidget(
-                    subcategories: subCategories,
                     isEditMode: isEditMode,
                     categoryColor: categoryColor,
                     onToggleEditMode: () {
@@ -93,7 +92,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
               ],
             ),
             floatingActionButton: isEditMode ? FloatingActionButton(
-              onPressed: () => _showAddSubcategoryDialog(cubit, context, categoryColor),
+              onPressed: () => _showAddSubcategoryDialog(context),
               backgroundColor: categoryColor,
               child: const Icon(Icons.add),
             ) : null,
@@ -103,34 +102,72 @@ class NewExpenseEntryScreen extends StatelessWidget {
     );
   }
 
-  void _showEditSubcategoryDialog(TransactionCubit cubit, Subcategory subCat, int index, BuildContext context, Color categoryColor) async {
-    // final result = await PickerDialogHelpers.showEditPickerDialog(
-    //   pickerFunction: (){},
-    //   context: context,
-    //   title: "Edit Subcategory",
-    //   initialName: subCat.name,
-    //   initialColor: subCat.color,
-    //   initialIcon: subCat.icon,
-    //   accentColor: categoryColor,
-    // );
-    //
-    // if (result != null) {
-    //   // Here you would update the subcategory in your data model
-    //   // cubit.updateSubcategory(index, result['name'], result['color'], result['icon']);
-    // }
+  // FIXED: Fixed the edit dialog function to prevent emitting after cubit closed
+  void _showEditSubcategoryDialog(
+      TransactionCubit cubit, SubcategoryEntity subCat, int index, BuildContext context, Color categoryColor) async {
+    // إنشاء نسخة جديدة من SubcategoryCubit
+    final subcategoryCubit = SubcategoryCubit();
+
+    // تهيئة قيم Cubit بناءً على البيانات الحالية للفئة الفرعية
+    subcategoryCubit.updateSubcategoryColor(parseColorFromString(subCat.subcategoryColor ?? '#1E88E5'));
+    subcategoryCubit.updateSubcategoryIcon(subCat.subcategoryIcon ?? Icons.category.codePoint.toString());
+
+    try {
+      final result = await PickerDialogHelpers.showSubcategoryPickerDialog(
+        context: context,
+        title: "Edit Subcategory",
+        parentCategory: categoryEntity.categoryId!,
+        subcategoryCubit: subcategoryCubit,
+        pickerFunction: (updatedSubcategory) {
+          // Instead of calling the method directly, trigger an event that will be handled
+          // after the dialog is dismissed and we check that the cubit is still active
+          Navigator.pop(context, {
+            'action': 'update',
+            'subcategory': updatedSubcategory,
+            'id': subCat.parentCategoryId,
+          });
+        },
+      );
+
+      // Handle the result after the dialog closes and before the cubit is disposed
+      if (result != null && result['action'] == 'update') {
+        await subcategoryCubit.updateSubcategoryData(
+            result['subcategory'],
+            result['id']
+        );
+      }
+    } finally {
+      // التأكد من التخلص من الـ cubit بعد الانتهاء
+      subcategoryCubit.close();
+    }
   }
 
-  void _showAddSubcategoryDialog(TransactionCubit cubit, BuildContext context, Color categoryColor) async {
-    final result = await PickerDialogHelpers.showSubcategoryPickerDialog(
-      context: context,
-      title: "Add New Subcategory",
-      parentCategory: categoryEntity,
-      pickerFunction: (){},
-    );
+  // FIXED: Fixed the add dialog function to prevent emitting after cubit closed
+  void _showAddSubcategoryDialog(BuildContext context) async {
+    final subcategoryCubit = SubcategoryCubit();
 
-    if (result != null) {
-      // Here you would add the subcategory to your data model
-      // cubit.addSubcategory(result['name'], result['color'], result['icon']);
+    try {
+      final result = await PickerDialogHelpers.showSubcategoryPickerDialog(
+        context: context,
+        title: "Add New Subcategory",
+        parentCategory: categoryEntity.categoryId!,
+        subcategoryCubit: subcategoryCubit,
+        pickerFunction: (subCategory) {
+          // Instead of directly inserting, return the data to be processed after dialog closes
+          Navigator.pop(context, {
+            'action': 'insert',
+            'subcategory': subCategory
+          });
+        },
+      );
+
+      // Process the result after dialog closes and before cubit disposal
+      if (result != null && result['action'] == 'insert') {
+        await subcategoryCubit.insertNewSubcategory(result['subcategory']);
+      }
+    } finally {
+      // التأكد من التخلص من الـ cubit بعد الانتهاء
+      subcategoryCubit.close();
     }
   }
 }

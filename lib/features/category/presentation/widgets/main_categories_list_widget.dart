@@ -42,10 +42,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                           value: categoryCubit,
                           child: NewExpenseEntryScreen(
                          categoryEntity: categoryEntity,
-                            subCategories:[
-                              Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor),
-                              Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor)
-                            ],
+
 
                           )
                       ),

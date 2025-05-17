@@ -5,7 +5,7 @@ abstract class SubcategoryEntity {
   final String? subcategoryName;
   final String? subcategoryColor;
   final String? subcategoryIcon;
-  final double? subcategorySpentAmount;
+  final String? subcategorySpentAmount;
 
 
 

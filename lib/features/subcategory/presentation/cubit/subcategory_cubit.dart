@@ -1,4 +1,4 @@
-import 'package:budget_buddy/core/data/database/sub_category_datasource.dart';
+import 'package:budget_buddy/core/data/database/subcategory_datasource.dart';
 import 'package:budget_buddy/core/data/models/subcategory_model.dart';
 import 'package:budget_buddy/core/data/repositories/sub_categories_repository_impl.dart';
 import 'package:budget_buddy/features/subcategory/presentation/cubit/subcategory_states.dart';
@@ -17,7 +17,6 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
   static SubcategoryCubit get(context) => BlocProvider.of(context);
   List<SubcategoryEntity> fetchedSubcategories = [];
 
-
   Future<void> fetchSubcategories() async {
     emit(GetSubcategoryDataLoadingState()); // حالة التحميل
     final response = await GetSubCategoriesDataUseCase(
@@ -30,24 +29,15 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
         emit(GetCategoryDataErrorState(errorMessage: failure.message));
       },
           (data) {
-            fetchedSubcategories = data;
+        fetchedSubcategories = data;
         emit(GetSubcategoryDataSuccessState(subcategories: data));
       },
     );
     print("=====================Alhamdulillah===============================");
   }
 
-  Future<void> insertNewSubcategory(SubcategoryEntity subCategory) async {
+  Future<void> insertNewSubcategory(SubcategoryEntity newSubcategory) async {
     emit(SubcategoryInsertionLoadingState());
-
-    // أضف الفئة الجديدة مباشرة إلى القائمة بدون انتظار معالجة قاعدة البيانات
-    // نقوم بوضع ID مؤقت، سيتم تعويضه بعد الإدراج في قاعدة البيانات
-    final newSubcategory = SubcategoryModel(
-      subcategoryName: subCategory.subcategoryName,
-      subcategoryColor: subCategory.subcategoryColor,
-      subcategoryIcon: subCategory.subcategoryIcon,
-
-    );
 
     fetchedSubcategories.add(newSubcategory);
     emit(SubcategoryInsertedState());
@@ -57,7 +47,7 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
       subcategoryRepository: SubcategoryRepositoryImpl(localDataSource: SubcategoryDataSource(),),
     );
 
-    final result = await useCase.call(subCategory);
+    final result = await useCase.call(newSubcategory);
 
     result.fold(
           (failure) {
@@ -66,11 +56,12 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
 
         // في حالة الفشل، نزيل الفئة المؤقتة من القائمة
         fetchedSubcategories.removeWhere((category) =>
-        category.parentCategoryId == newSubcategory.parentCategoryId);
+        category.parentCategoryId == newSubcategory.parentCategoryId &&
+            category.subcategoryName == newSubcategory.subcategoryName);
         emit(ChangeSubcategoryAppearanceState(items: fetchedSubcategories));
       },
           (_) {
-        print('Category inserted successfully');
+        print('Subcategory inserted successfully');
         // بعد النجاح، نقوم بتحديث القائمة بالبيانات الحقيقية من قاعدة البيانات
         fetchSubcategories();
       },
@@ -109,7 +100,7 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
         }
       },
           (_) {
-        print('Category deleted successfully');
+        print('Subcategory deleted successfully');
         emit(SubcategoryDeletedState());
         // تأكيد الحذف، لا نحتاج لتحديث القائمة مرة أخرى
       },
@@ -149,7 +140,7 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
         }
       },
           (_) {
-        print('Category updated successfully');
+        print('Subcategory updated successfully');
         emit(SubcategoryUpdatedState());
         // تم التحديث بنجاح، لا نحتاج لتحديث القائمة مرة أخرى
       },
@@ -162,12 +153,11 @@ class SubcategoryCubit extends Cubit<SubcategoryStates> {
     _subcategoryIcon = updatedCategoryIcon;
     emit(ChangeSubcategoryAppearanceState(items: fetchedSubcategories));
   }
+
   Color subcategoryColor = Colors.blueAccent;
 
   void updateSubcategoryColor(Color color) {
     subcategoryColor = color;
     emit(ChangeSubcategoryAppearanceState(items: fetchedSubcategories));
   }
-
-
 }

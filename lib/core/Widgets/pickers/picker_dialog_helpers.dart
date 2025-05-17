@@ -89,76 +89,78 @@ class PickerDialogHelpers {
     return result;
   }
 
+  // FIXED: Modified showSubcategoryPickerDialog to handle state properly
+  static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
+    required BuildContext context,
+    required String title,
+    required int parentCategory,
+    required Function(SubcategoryEntity) pickerFunction,
+    required SubcategoryCubit subcategoryCubit,
+  }) async {
+    final TextEditingController nameController = TextEditingController();
+    final PageController pageController = PageController();
+    int currentPage = 0;
+    bool hasValidationError = false;
+    String validationErrorMessage = '';
 
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: subcategoryCubit,
+          child: StatefulBuilder(
+              builder: (context, setState) {
+                return BlocBuilder<SubcategoryCubit, SubcategoryStates>(
+                  builder: (context, state) {
+                    return _buildDialogContent(
+                      hasValidationError: hasValidationError,
+                      validationErrorMessage: validationErrorMessage,
+                      currentColor: subcategoryCubit.subcategoryColor,
+                      context: context,
+                      title: title,
+                      nameController: nameController,
+                      pageController: pageController,
+                      currentPage: currentPage,
+                      isCategory: false,
+                      subcategoryCubit: subcategoryCubit,
+                      onIconSelected: (icon) {
+                        subcategoryCubit.updateSubcategoryIcon(icon.codePoint.toString());
+                      },
+                      onColorSelected: (color) {
+                        subcategoryCubit.updateSubcategoryColor(color);
+                      },
+                      onSavePressed: () {
+                        if (nameController.text.trim().isEmpty) {
+                          setState(() {
+                            hasValidationError = true;
+                            validationErrorMessage = 'Name is required';
+                          });
+                          return;
+                        }
 
+                        // Create the subcategory entity
+                        SubcategoryEntity newEntity = SubcategoryModel(
+                          subcategoryName: nameController.text,
+                          subcategoryColor: subcategoryCubit.subcategoryColor.value.toRadixString(16),
+                          subcategoryIcon: subcategoryCubit.subcategoryIcon,
+                          parentCategoryId: parentCategory, // FIXED: Use parentCategory instead of hardcoded value
+                        );
 
-/// Show dialog to edit color and icon for subcategories
-static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
-  required BuildContext context,
-  required String title,
-  required CategoryEntity parentCategory,
-  required Function() pickerFunction,
-  double? initialAmount,
-}) async {
-  final TextEditingController nameController = TextEditingController();
-  final PageController pageController = PageController();
-
-  SubcategoryCubit subcategoryCubit = SubcategoryCubit.get(context);
-
-
-  int currentPage = 0;
-
-  final result = await showDialog<Map<String, dynamic>>(
-    context: context,
-    builder: (BuildContext context) {
-      return BlocBuilder<SubcategoryCubit, SubcategoryStates>(
-        builder: (context, state) {
-          return _buildDialogContent(
-
- currentColor: subcategoryCubit.subcategoryColor,
-            context: context,
-            title: title,
-            nameController: nameController,
-            pageController: pageController,
-            currentPage: currentPage,
-            isCategory: false,
-            subcategoryCubit: subcategoryCubit,
-            onIconSelected: (icon) {
-              // subcategoryCubit.subcategoryIcon = icon.codePoint.toString();
-              subcategoryCubit.emit(ChangeSubcategoryAppearanceState(items: subcategoryCubit.fetchedSubcategories));
-            },
-            onColorSelected: (color) {
-              subcategoryCubit.updateSubcategoryColor(color);
-            },
-            onSavePressed: () {
-              if (nameController.text.trim().isNotEmpty) {
-                IconData selectedIcon = IconData(
-                    int.tryParse(subcategoryCubit.subcategoryIcon ?? '0xe000') ?? 0xe000,
-                    fontFamily: 'MaterialIcons'
+                        // Pass to caller - will be handled later
+                        pickerFunction(newEntity);
+                      },
+                    );
+                  },
                 );
-
-                // إنشاء كائن فئة فرعية جديدة
-                SubcategoryEntity newEntity = SubcategoryModel(
-                  subcategoryName: nameController.text,
-                  subcategoryColor:subcategoryCubit.subcategoryColor.value.toRadixString(16),
-                  subcategoryIcon:  subcategoryCubit.subcategoryIcon,
-                  parentCategoryId: parentCategory.categoryId,
-                );
-
-                // استدعاء الدالة المناسبة
-                pickerFunction();
-
-                Navigator.pop(context);
               }
-            },
-          );
-        },
-      );
-    },
-  );
+          ),
+        );
+      },
+    );
 
-  return result;
-}
+    return result;
+  }
+
   static Widget _buildDialogContent({
     required BuildContext context,
     required String title,
@@ -206,6 +208,8 @@ static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
                   // إعادة بناء الواجهة
                   if (isCategory) {
                     categoryCubit!.emit(ChangeCategoryAppearanceState(items: categoryCubit.fetchedCategories));
+                  } else {
+                    subcategoryCubit!.emit(ChangeSubcategoryAppearanceState(items: subcategoryCubit.fetchedSubcategories));
                   }
                 },
                 children: [
@@ -222,7 +226,7 @@ static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
                               int.tryParse(
                                   isCategory ?
                                   categoryCubit!.categoryIcon ?? '0xe000' :
-                                  categoryCubit!.categoryIcon ?? '0xe000') ?? 0xe000,
+                                  subcategoryCubit!.subcategoryIcon ?? '0xe000') ?? 0xe000,
                               fontFamily: 'MaterialIcons'
                           ),
                           currentColor: currentColor,
@@ -289,5 +293,4 @@ static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
       ],
     );
   }
-
 }

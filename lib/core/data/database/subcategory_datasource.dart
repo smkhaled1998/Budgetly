@@ -17,16 +17,16 @@ class SubcategoryDataSource {
     required String subcategoryName,
     required String subcategoryColor,
     required String subcategoryIcon,
-    required int categoryId,
+    required int parentCategoryId,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
+      // FIXED: Remove the subcategorySpentAmount field if it doesn't exist in the schema
       int response = await myDb!.insert('subcategory', {
         'subcategoryName': subcategoryName,
         'subcategoryColor': subcategoryColor,
         'subcategoryIcon': subcategoryIcon,
-        'subcategorySpentAmount': "0",
-        'categoryId': categoryId, // ربط الفئة الفرعية بالفئة الرئيسية
+        'parentCategoryId': parentCategoryId, // ربط الفئة الفرعية بالفئة الرئيسية
       });
       print("Sub-category data inserted");
       return response;
@@ -71,25 +71,4 @@ class SubcategoryDataSource {
       throw DataUpdateException("Failed to update sub-category data: ${e.toString()}");
     }
   }
-
-  // استرداد فئة فرعية بناءً على معرفها
-  // Future<Map<String, dynamic>?> getSubcategoryById(int subcategoryId) async {
-  //   Database? myDb = await DatabaseHelper.db;
-  //   try {
-  //     final response = await myDb!.query(
-  //       'subcategory',
-  //       where: 'subcategoryId = ?',
-  //       whereArgs: [subcategoryId],
-  //     );
-  //     if (response.isNotEmpty) {
-  //       return response.first;
-  //     } else {
-  //       return null;
-  //     }
-  //   } on DatabaseException catch (e) {
-  //     throw DataRetrievalException("Failed to retrieve sub-category by ID: ${e.toString()}");
-  //   }
-  // }
-
-
 }
